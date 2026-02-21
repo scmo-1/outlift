@@ -12,13 +12,13 @@
 - id:
 - name:
 - base_exercise_id: FK > base_exercises.id
-- user_id: FK > users.id
+- profile_id: FK > profiles.id
 - created_at
 - updated_at
 
-## users
+## profiles
 
-- id
+- id: FK -> auth_users.id
 - username
 - email
 - created_at
@@ -27,8 +27,10 @@
 
 - id
 - name
-- user_id: FK -> users.id
+- profile_id: FK -> profiles.id
 - created_at
+- updated_at
+- isActive: boolean
 
 ## workouts
 
@@ -36,6 +38,7 @@
 - name
 - program_id: FK -> user_programs.id
 - created_at
+- updated_at
 - order_index
 
 ## workout_exercises
@@ -44,12 +47,14 @@
 - workout_id: FK -> workouts.id
 - user_exercise_id: FK -> user_exercises.id
 - in_workout_index:
+- sets:
+- rep_goal:
 
 ## workout_sessions
 
 - id
 - workout_id: FK -> workouts.id
-- user_id: FK -> users.id
+- profile_id: FK -> profiles.id
 - created_at
 - started_at
 - ended_at
@@ -61,6 +66,7 @@
 - user_exercise_id: FK -> user_exercises.id
 - in_session_index
 - planned_exercise_id: FK -> workout_exercises.id // nullable
+- isSkipped: boolean
 
 ## workout_sets
 
@@ -70,4 +76,47 @@
 - weight
 - reps
 - RIR
+- setSkipped: boolean
 - created_at
+
+# DB
+
+### Programs
+
+- listPrograms(profileId)
+- getProgram(profileId, programId)
+- listWorkoutsFromProgram(profileId, programId)
+- createProgram(profileId, payload)
+- deleteProgram(profileId, programId)
+- updateProgram(programId, payload)
+
+### Workout
+
+- listWorkoutExercises(workoutId)
+- updateWorkout(workoutId, payload)
+- deleteWorkout(profileId, workoutId)
+- getWorkout(profileId, workoutId)
+
+### Sessions
+
+- getActiveSession(profileId)
+- createSession(profileId, workoutId)
+- getSession(profileId, sessionId)
+- listSessionExercises(sessionId)
+- listSetsForSession(sessionId)
+- insertSet(sessionExerciseId)
+- updateSessionExercise(sessionExerciseId, newExerciseId)
+- finishSession(profileId, sessionId)
+
+### Exercises
+
+- listUserExercises(profileId)
+- SearchBaseExercise(query)
+- createUserExercise(profileId, baseExerciseId, name)
+- updateExercise(userExerciseId, payload)
+-
+
+# Services
+
+- calculateE1RM
+-

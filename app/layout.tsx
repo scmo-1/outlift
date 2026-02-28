@@ -9,13 +9,13 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 const jetBrains_mono = JetBrains_Mono({
-  variable: "--font-geist-mono",
+  variable: "--font-mono",
   subsets: ["latin"],
   display: "swap"
 });
 
 export const metadata: Metadata = {
-  title: "Outlift Training App",
+  title: "Outlift",
   description: "Training app for the minimalist",
 };
 

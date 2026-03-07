@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import type { Exercise, CustomExercisePayload } from '@/types/exercises'
+import type { Exercise } from '@/types/exercises'
 
 const supabase = await createClient()
 
@@ -25,8 +25,4 @@ export async function listExercisesByBodypart(bodypart: string): Promise<Exercis
 
   if (error) throw error
   return data ?? []
-}
-
-export async function createCustomExercise(CustomExercisePayload) {
-  const {} = await supabase
 }

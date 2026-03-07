@@ -1,9 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Exercise } from '@/types/exercises'
 
-const supabase = await createClient()
-
 export async function listAllExercises(): Promise<Exercise[]> {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('exercises')
     .select('*')
@@ -17,6 +16,7 @@ export async function listAllExercises(): Promise<Exercise[]> {
 }
 
 export async function listExercisesByBodypart(bodypart: string): Promise<Exercise[]> {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('exercise')
     .select('*')

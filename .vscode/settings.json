@@ -2,5 +2,8 @@
   "tailwindCSS.classAttributes": ["class", "className", ".*Styles", ".*Classes"],
   "tailwindCSS.experimental.classRegex": [
     ["(?:clsx|cn|cva)\\(([^)]*)\\)", "(?:'|\\\"|`)([^'\\\"`]*)"]
-  ]
+  ],
+  "[sql]": {
+    "editor.defaultFormatter": "inferrinizzard.prettier-sql-vscode"
+  }
 }

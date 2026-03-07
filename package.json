@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "dev:local": "NEXT_PUBLIC_SUPABASE_TARGET=local next dev",
+    "dev:cloud": "NEXT_PUBLIC_SUPABASE_TARGET=cloud next dev"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",

@@ -64,6 +64,7 @@ Exercise catalog. Can contain system exercises and custom user exercises.
 | ----------- | ----------- | ------------ | ----------- |
 | id          | uuid        | PK, not null |             |
 | name        | text        | not null     |             |
+| nickname    | text        | nullable     |             |
 | bodypart    | text        | not null     |             |
 | type        | text        | not null     |             |
 | created_by  | uuid        | nullable     | profiles.id |

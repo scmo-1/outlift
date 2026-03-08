@@ -1,189 +1,237 @@
 begin;
 
--- 1) Exercises (no custom id)
 insert into
     public.exercises (
+        id,
         name,
         nickname,
         bodypart,
         type,
         created_by,
+        created_at,
+        updated_at,
         archived_at
     )
 values
     (
+        gen_random_uuid (),
         'Barbell Back Squat',
-        'Squats',
+        'Squat',
         'legs',
         'push',
         null,
+        now (),
+        now (),
         null
     ),
     (
-        'Flat Barbell Bench Press',
-        'Bench Press',
-        'chest',
+        gen_random_uuid (),
+        'Front Squat',
+        null,
+        'legs',
         'push',
         null,
+        now (),
+        now (),
         null
     ),
     (
-        'Barbell Row',
-        'BB Rows',
-        'back',
-        'pull',
-        null,
-        null
-    ),
-    (
-        'Overhead Press',
-        'OHP',
-        'shoulders',
-        'push',
-        null,
-        null
-    ),
-    (
+        gen_random_uuid (),
         'Romanian Deadlift',
         'RDL',
         'legs',
         'pull',
         null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Leg Press',
+        null,
+        'legs',
+        'push',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Flat Barbell Bench Press',
+        'Bench',
+        'chest',
+        'push',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Incline Dumbbell Press',
+        'Incline DB Press',
+        'chest',
+        'push',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Dips',
+        null,
+        'chest',
+        'push',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Barbell Row',
+        'BB Row',
+        'back',
+        'pull',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Pull-Up',
+        null,
+        'back',
+        'pull',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Lat Pulldown',
+        null,
+        'back',
+        'pull',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Overhead Press',
+        'OHP',
+        'shoulders',
+        'push',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Lateral Raise',
+        null,
+        'shoulders',
+        'push',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Rear Delt Fly',
+        null,
+        'shoulders',
+        'pull',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Barbell Curl',
+        null,
+        'arms',
+        'pull',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Hammer Curl',
+        null,
+        'arms',
+        'pull',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Triceps Pushdown',
+        null,
+        'arms',
+        'push',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Skull Crusher',
+        null,
+        'arms',
+        'push',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Standing Calf Raise',
+        'Calf Raise',
+        'legs',
+        'push',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Plank',
+        null,
+        'core',
+        'hold',
+        null,
+        now (),
+        now (),
+        null
+    ),
+    (
+        gen_random_uuid (),
+        'Hanging Leg Raise',
+        null,
+        'core',
+        'pull',
+        null,
+        now (),
+        now (),
         null
     );
-
--- 2) Program for first profile
-with
-    p as (
-        select
-            id
-        from
-            public.profiles
-        order by
-            created_at asc
-        limit
-            1
-    ),
-    prog as (
-        insert into
-            public.user_programs (name, profile_id, is_active, archived_at)
-        select
-            'Upper/Lower 4 Day',
-            p.id,
-            true,
-            null
-        from
-            p returning id,
-            profile_id
-    ),
-    w_upper as (
-        insert into
-            public.workouts (name, program_id, order_index, archived_at)
-        select
-            'Upper A',
-            prog.id,
-            1,
-            null
-        from
-            prog returning id
-    ),
-    w_lower as (
-        insert into
-            public.workouts (name, program_id, order_index, archived_at)
-        select
-            'Lower A',
-            prog.id,
-            2,
-            null
-        from
-            prog returning id
-    ),
-    ex_bench as (
-        select
-            id
-        from
-            public.exercises
-        where
-            name = 'Flat Barbell Bench Press'
-        limit
-            1
-    ),
-    ex_row as (
-        select
-            id
-        from
-            public.exercises
-        where
-            name = 'Barbell Row'
-        limit
-            1
-    ),
-    ex_squat as (
-        select
-            id
-        from
-            public.exercises
-        where
-            name = 'Barbell Back Squat'
-        limit
-            1
-    ),
-    ex_rdl as (
-        select
-            id
-        from
-            public.exercises
-        where
-            name = 'Romanian Deadlift'
-        limit
-            1
-    )
-insert into
-    public.workout_exercises (
-        workout_id,
-        exercise_id,
-        in_workout_index,
-        sets,
-        rep_goal
-    )
-select
-    w_upper.id,
-    ex_bench.id,
-    1,
-    4,
-    6
-from
-    w_upper,
-    ex_bench
-union all
-select
-    w_upper.id,
-    ex_row.id,
-    2,
-    4,
-    8
-from
-    w_upper,
-    ex_row
-union all
-select
-    w_lower.id,
-    ex_squat.id,
-    1,
-    4,
-    6
-from
-    w_lower,
-    ex_squat
-union all
-select
-    w_lower.id,
-    ex_rdl.id,
-    2,
-    3,
-    8
-from
-    w_lower,
-    ex_rdl;
 
 commit;

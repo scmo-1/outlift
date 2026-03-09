@@ -1,8 +1,7 @@
 begin;
 
--- Replace this with your real profile email
 with
-    target_profile as (
+    p as (
         select
             id
         from
@@ -12,47 +11,76 @@ with
         limit
             1
     ),
-    -- Create 1 active program
-    new_program as (
+    prog as (
         insert into
-            public.programs (name, profile_id, is_active, archived_at)
+            public.user_programs (
+                id,
+                name,
+                profile_id,
+                created_at,
+                updated_at,
+                is_active,
+                archived_at
+            )
         select
-            'Upper / Lower 4 Day',
-            tp.id,
+            gen_random_uuid (),
+            'Upper/Lower 2-Day',
+            p.id,
+            now (),
+            now (),
             true,
             null
         from
-            target_profile tp returning id,
+            p returning id,
             profile_id
     ),
-    -- Create 2 workouts in the program
-    upper_workout as (
+    w1 as (
         insert into
-            public.program_workouts (name, program_id, order_index, archived_at)
+            public.workouts (
+                id,
+                name,
+                program_id,
+                created_at,
+                updated_at,
+                order_index,
+                archived_at
+            )
         select
+            gen_random_uuid (),
             'Upper A',
-            np.id,
+            prog.id,
+            now (),
+            now (),
             1,
             null
         from
-            new_program np returning id
+            prog returning id
     ),
-    lower_workout as (
+    w2 as (
         insert into
-            public.program_workouts (name, program_id, order_index, archived_at)
+            public.workouts (
+                id,
+                name,
+                program_id,
+                created_at,
+                updated_at,
+                order_index,
+                archived_at
+            )
         select
+            gen_random_uuid (),
             'Lower A',
-            np.id,
+            prog.id,
+            now (),
+            now (),
             2,
             null
         from
-            new_program np returning id
+            prog returning id
     ),
-    -- Find exercises by name from your global seed
-    ex_bench as (
+    bench as (
         select
-            id,
-            name
+            id
         from
             public.exercises
         where
@@ -60,10 +88,9 @@ with
         limit
             1
     ),
-    ex_row as (
+    row_ as (
         select
-            id,
-            name
+            id
         from
             public.exercises
         where
@@ -71,10 +98,9 @@ with
         limit
             1
     ),
-    ex_ohp as (
+    ohp as (
         select
-            id,
-            name
+            id
         from
             public.exercises
         where
@@ -82,10 +108,9 @@ with
         limit
             1
     ),
-    ex_squat as (
+    squat as (
         select
-            id,
-            name
+            id
         from
             public.exercises
         where
@@ -93,10 +118,9 @@ with
         limit
             1
     ),
-    ex_rdl as (
+    rdl as (
         select
-            id,
-            name
+            id
         from
             public.exercises
         where
@@ -104,10 +128,9 @@ with
         limit
             1
     ),
-    ex_calf as (
+    calf as (
         select
-            id,
-            name
+            id
         from
             public.exercises
         where
@@ -115,10 +138,10 @@ with
         limit
             1
     ),
-    -- Planned exercises for Upper A
-    upper_plan as (
+    we_upper as (
         insert into
-            public.program_workout_exercises (
+            public.workout_exercises (
+                id,
                 workout_id,
                 exercise_id,
                 in_workout_index,
@@ -126,42 +149,44 @@ with
                 rep_goal
             )
         select
-            uw.id,
-            eb.id,
+            gen_random_uuid (),
+            w1.id,
+            bench.id,
             1,
             4,
             6
         from
-            upper_workout uw,
-            ex_bench eb
+            w1,
+            bench
         union all
         select
-            uw.id,
-            er.id,
+            gen_random_uuid (),
+            w1.id,
+            row_.id,
             2,
             4,
             8
         from
-            upper_workout uw,
-            ex_row er
+            w1,
+            row_
         union all
         select
-            uw.id,
-            eo.id,
+            gen_random_uuid (),
+            w1.id,
+            ohp.id,
             3,
             3,
             8
         from
-            upper_workout uw,
-            ex_ohp eo returning id,
-            workout_id,
+            w1,
+            ohp returning id,
             exercise_id,
             in_workout_index
     ),
-    -- Planned exercises for Lower A
-    lower_plan as (
+    we_lower as (
         insert into
-            public.program_workout_exercises (
+            public.workout_exercises (
+                id,
                 workout_id,
                 exercise_id,
                 in_workout_index,
@@ -169,39 +194,42 @@ with
                 rep_goal
             )
         select
-            lw.id,
-            es.id,
+            gen_random_uuid (),
+            w2.id,
+            squat.id,
             1,
             4,
             6
         from
-            lower_workout lw,
-            ex_squat es
+            w2,
+            squat
         union all
         select
-            lw.id,
-            er.id,
+            gen_random_uuid (),
+            w2.id,
+            rdl.id,
             2,
             3,
             8
         from
-            lower_workout lw,
-            ex_rdl er
+            w2,
+            rdl
         union all
         select
-            lw.id,
-            ec.id,
+            gen_random_uuid (),
+            w2.id,
+            calf.id,
             3,
             4,
             12
         from
-            lower_workout lw,
-            ex_calf ec returning id
+            w2,
+            calf returning id
     ),
-    -- Create one finished session for Upper A
-    new_session as (
+    sess as (
         insert into
             public.workout_sessions (
+                id,
                 workout_id,
                 profile_id,
                 created_at,
@@ -209,39 +237,38 @@ with
                 ended_at
             )
         select
-            uw.id,
-            np.profile_id,
+            gen_random_uuid (),
+            w1.id,
+            prog.profile_id,
             now () - interval '1 day',
-            now () - interval '1 day' + interval '5 minutes',
-            now () - interval '1 day' + interval '55 minutes'
+            now () - interval '1 day' + interval '5 min',
+            now () - interval '1 day' + interval '55 min'
         from
-            upper_workout uw,
-            new_program np returning id
+            w1,
+            prog returning id
     ),
-    -- Session exercises copied from the upper plan
-    new_session_exercises as (
+    wse as (
         insert into
-            public.session_exercises (
+            public.workout_session_exercises (
+                id,
                 session_id,
                 exercise_id,
-                exercise_name,
                 in_session_index,
                 planned_exercise_id
             )
         select
-            ns.id,
-            e.id,
-            e.name,
-            up.in_workout_index,
-            up.id
+            gen_random_uuid (),
+            sess.id,
+            we_upper.exercise_id,
+            we_upper.in_workout_index,
+            we_upper.id
         from
-            new_session ns
-            join upper_plan up on true
-            join public.exercises e on e.id = up.exercise_id returning id
+            sess,
+            we_upper returning id
     )
-    -- Add 3 sets per session exercise
 insert into
-    public.sets (
+    public.workout_sets (
+        id,
         session_exercise_id,
         set_index,
         weight,
@@ -250,33 +277,36 @@ insert into
         created_at
     )
 select
-    nse.id,
+    gen_random_uuid (),
+    wse.id,
     1,
     40,
     10,
     3,
     now () - interval '1 day'
 from
-    new_session_exercises nse
+    wse
 union all
 select
-    nse.id,
+    gen_random_uuid (),
+    wse.id,
     2,
     45,
     8,
     2,
     now () - interval '1 day'
 from
-    new_session_exercises nse
+    wse
 union all
 select
-    nse.id,
+    gen_random_uuid (),
+    wse.id,
     3,
     47.5,
     6,
     1,
     now () - interval '1 day'
 from
-    new_session_exercises nse;
+    wse;
 
 commit;

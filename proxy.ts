@@ -1,5 +1,5 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
 
 function getSupabaseEnv() {
   const target = process.env.NEXT_PUBLIC_SUPABASE_TARGET
@@ -29,10 +29,13 @@ function getSupabaseEnv() {
   throw new Error('Invalid NEXT_PUBLIC_SUPABASE_TARGET')
 }
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request,
-  })
+const publicRoutes = ['/', '/login', '/signup']
+
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  const isPublicRoute = publicRoutes.includes(pathname)
+
+  let response = NextResponse.next({ request })
 
   const { url, publishableKey } = getSupabaseEnv()
 
@@ -42,20 +45,35 @@ export async function middleware(request: NextRequest) {
         return request.cookies.getAll()
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-
-        response = NextResponse.next({
-          request,
+        cookiesToSet.forEach(({ name, value }) => {
+          request.cookies.set(name, value)
         })
 
-        cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options),
-        )
+        response = NextResponse.next({ request })
+
+        cookiesToSet.forEach(({ name, value, options }) => {
+          response.cookies.set(name, value, options)
+        })
       },
     },
   })
 
-  await supabase.auth.getClaims()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user && !isPublicRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    url.searchParams.set('next', pathname)
+    return NextResponse.redirect(url)
+  }
+
+  if (user && (pathname === '/login' || pathname === '/signup')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/app'
+    return NextResponse.redirect(url)
+  }
 
   return response
 }

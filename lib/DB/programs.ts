@@ -1,5 +1,5 @@
 import type { Program } from '@/types/programs'
-import { getSupabase, throwError } from './utils'
+import { getSupabase } from './utils'
 
 export async function listAllPrograms(profileId: string): Promise<Program[]> {
   const supabase = await getSupabase()
@@ -10,12 +10,12 @@ export async function listAllPrograms(profileId: string): Promise<Program[]> {
     .eq('profile_id', profileId)
     .is('archived_at', null)
 
-  throwError(error)
+  if (error) throw error
 
   return data ?? []
 }
 
-export async function getSingleProgram(
+export async function getActiveProgram(
   profileId: string,
   programId: string,
 ): Promise<Program | null> {
@@ -25,10 +25,10 @@ export async function getSingleProgram(
     .select('*')
     .eq('id', programId)
     .eq('profile_id', profileId)
-    .is('archived_at', null)
+    .is('is_active', true)
     .maybeSingle()
 
-  throwError(error)
+  if (error) throw error
 
   return data ?? null
 }

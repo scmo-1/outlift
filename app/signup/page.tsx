@@ -1,4 +1,5 @@
 import { signup } from '@/lib/auth/actions'
+import Link from 'next/link'
 
 export default function signInPage() {
   return (
@@ -10,6 +11,9 @@ export default function signInPage() {
       <button type="submit" className="border p-2">
         Create account
       </button>
+      <p>
+        Already have an account? <Link href="/login">Log In</Link>
+      </p>
     </form>
   )
 }

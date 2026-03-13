@@ -1,4 +1,5 @@
 import { login } from '@/lib/auth/actions'
+import Link from 'next/link'
 
 export default async function LoginPage() {
   return (
@@ -10,6 +11,9 @@ export default async function LoginPage() {
         <button type="submit" className="border p-2">
           Log in
         </button>
+        <p>
+          Don`t have an account yet? <Link href="/signup">Sign Up</Link>
+        </p>
       </form>
     </div>
   )

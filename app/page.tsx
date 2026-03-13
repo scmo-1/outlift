@@ -1,12 +1,17 @@
-import { UnderConstructionPage } from "@/features/UnderConstruction";
+import LandingPage from '@/features/Landingpage/LandingPage'
+import { getUser } from '@/lib/auth/getUser'
+import { redirect } from 'next/navigation'
 
-export default function Home() {
+export default async function Home() {
+  const user = await getUser()
+  console.log(user)
+  if (user) {
+    redirect('/home')
+  }
+
   return (
-    <div className="">
-      {/* temporary layout */}
-      <main className="flex flex-col"> 
-        <UnderConstructionPage />
-      </main>
+    <div>
+      <LandingPage />
     </div>
-  );
+  )
 }

@@ -1,8 +1,9 @@
+import { getSupabase } from '../DB/utils'
 import { redirect } from 'next/navigation'
-import { getSupabase } from '@/lib/DB/utils'
 
-export default async function AppPage() {
+export async function requireUser() {
   const supabase = await getSupabase()
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -11,5 +12,5 @@ export default async function AppPage() {
     redirect('/login')
   }
 
-  return <div>App</div>
+  return user
 }

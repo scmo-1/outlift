@@ -1,5 +1,4 @@
 'use server'
-
 import { redirect } from 'next/navigation'
 import { getSupabase } from '@/lib/DB/utils'
 
@@ -13,7 +12,7 @@ export async function login(formData: FormData) {
     email,
     password,
   })
-  if (error) return { error: error.message }
+  if (error) throw new Error(error.message)
 
   redirect('/')
 }
@@ -35,7 +34,7 @@ export async function signup(formData: FormData) {
     },
   })
 
-  if (error) return { error: error.message }
+  if (error) throw new Error(error.message)
 
   redirect('/')
 }

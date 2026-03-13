@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
-import NavMenu from '@/components/Nav/NavMenu'
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: '--font-sans',
@@ -29,7 +28,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${plusJakarta.variable} ${jetBrains_mono.variable} antialiased dark`}>
         <main>{children}</main>
-        <NavMenu />
       </body>
     </html>
   )

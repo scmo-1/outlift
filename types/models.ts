@@ -1,5 +1,7 @@
 import type { Database } from './database'
 
+export type ProgramRow = Database['public']['Tables']['programs']['Row']
+
 export type ProgramWorkoutRow = Database['public']['Tables']['program_workouts']['Row']
 
 export type ProgramWorkoutExerciseRow =

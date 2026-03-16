@@ -1,7 +1,7 @@
-import type { Program } from '@/types/programs'
+import type { ProgramRow } from '@/types/models'
 import { getSupabase } from './utils'
 
-export async function listAllPrograms(profileId: string): Promise<Program[]> {
+export async function listAllPrograms(profileId: string): Promise<ProgramRow[]> {
   const supabase = await getSupabase()
 
   const { data, error } = await supabase
@@ -18,7 +18,7 @@ export async function listAllPrograms(profileId: string): Promise<Program[]> {
 export async function getActiveProgram(
   profileId: string,
   programId: string,
-): Promise<Program | null> {
+): Promise<ProgramRow | null> {
   const supabase = await getSupabase()
   const { data, error } = await supabase
     .from('programs')

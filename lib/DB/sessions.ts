@@ -1,20 +1,21 @@
 import { getSupabase } from './utils'
-import type { CompletedSession } from '@/types/sessions'
+import { WorkoutSessionRow } from '@/types/models'
 
-export async function listCompletedSessions(profileId: string): Promise<CompletedSession[]> {
+export async function listCompletedSessions(profileId: string): Promise<WorkoutSessionRow[]> {
   const supabase = await getSupabase()
   const { data, error } = await supabase
     .from('workout_sessions')
     .select('*')
     .eq('profile_id', profileId)
     .not('ended_at', 'is', null)
+    .order('ended_at', { ascending: false })
 
   if (error) throw error
 
   return data ?? []
 }
 
-export async function getActiveSession(profileId: string): Promise<CompletedSession | null> {
+export async function getActiveSession(profileId: string): Promise<WorkoutSessionRow | null> {
   const supabase = await getSupabase()
   const { data, error } = await supabase
     .from('workout_sessions')

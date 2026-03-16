@@ -1,11 +1,11 @@
-import { requireUser } from '@/lib/auth/requireUser'
+import { getProfile } from '@/lib/auth/getProfile'
 
 export default async function AppPage() {
-  const user = await requireUser()
+  const profile = await getProfile()
 
   return (
     <div>
-      <h1>weclome</h1>
+      <h1>weclome {profile.username}</h1>
     </div>
   )
 }

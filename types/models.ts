@@ -13,6 +13,8 @@ export type SessionExerciseRow = Database['public']['Tables']['session_exercises
 
 export type SetRow = Database['public']['Tables']['sets']['Row']
 
+export type ProfileRow = Database['public']['Tables']['profiles']['Row']
+
 export type PlannedExercise = ProgramWorkoutExerciseRow & {
   exercise: ExerciseRow
 }

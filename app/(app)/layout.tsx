@@ -5,7 +5,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   await requireUser()
 
   return (
-    <div>
+    <div className="h-screen flex flex-col p-3">
       {children}
       <AppNav />
     </div>

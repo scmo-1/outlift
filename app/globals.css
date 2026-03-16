@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -48,7 +47,7 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.1rem;
 
   /* Dark baseline (so app looks correct even without .dark) */
   --background: #090b0c;

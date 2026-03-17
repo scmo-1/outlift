@@ -7,7 +7,7 @@ function AppNav() {
   const pathname = usePathname()
 
   const items = [
-    { href: '/home', label: 'Home' },
+    { href: '/today', label: 'Home' },
     { href: '/programs', label: 'Program' },
     { href: '/progression', label: 'Progression' },
   ]

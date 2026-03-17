@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
 
 type CardProps = {
   title: string
@@ -9,13 +8,13 @@ type CardProps = {
 
 function AppCard({ title, extra, children }: CardProps) {
   return (
-    <Card className="border-0 border-b border-accent p-3 font-sans">
-      <CardHeader className="border-border flex gap-2 w-full px-0 items-baseline">
-        <CardTitle className="w-full text-nowrap">{title}</CardTitle>
+    <Card className="border-0 border-b border-accent p-3 font-sans gap-3">
+      <CardHeader className="border-border flex gap-2 w-full px-0 items-baseline m-0">
+        <CardTitle className="w-full text-nowrap font-semibold">{title}</CardTitle>
         <span className="h-full w-full border-b border-dashed" />
-        <span className="font-mono">{extra}</span>
+        <span>{extra}</span>
       </CardHeader>
-      <CardContent className="bg-orange-900">{children}</CardContent>
+      <CardContent className="p-1 bg-secondary">{children}</CardContent>
     </Card>
   )
 }

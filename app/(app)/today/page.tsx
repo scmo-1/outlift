@@ -11,9 +11,7 @@ export default async function TodayPage() {
       <h1>weclome {profile.username}</h1>
       <div className="bg-blue-700">scedule</div>
       <h2 className="">next session</h2>
-      <section>
-        <WorkoutList exercises={data.nextWorkoutDetails.exercises} />
-      </section>
+      <WorkoutList exercises={data.nextWorkoutDetails.exercises} previousLimit={1} />
     </div>
   )
 }

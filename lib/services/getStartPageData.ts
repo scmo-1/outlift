@@ -3,7 +3,7 @@ import { getNextWorkout } from './getNextWorkout'
 import { listCompletedSessions } from '../DB/sessions'
 import { getWorkoutDetails } from './getWorkoutDetails'
 
-export async function getTodayPageData(profileId: string) {
+export async function getStartPageData(profileId: string) {
   const activeProgram = await getActiveProgram(profileId)
   if (!activeProgram) throw new Error('No active program found')
 

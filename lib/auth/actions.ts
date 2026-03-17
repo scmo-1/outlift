@@ -14,7 +14,7 @@ export async function login(formData: FormData) {
   })
   if (error) throw new Error(error.message)
 
-  redirect('/today')
+  redirect('/start')
 }
 
 export async function signup(formData: FormData) {
@@ -36,7 +36,7 @@ export async function signup(formData: FormData) {
 
   if (error) throw new Error(error.message)
 
-  redirect('/today')
+  redirect('/start')
 }
 
 export async function logout() {

@@ -4,10 +4,18 @@ import { WorkoutList } from '@/features/Workouts'
 import { getCalendarData } from '@/lib/services/getCalendarData'
 import Calendar from '@/features/Calendar/Calendar'
 
-export default async function StartPage() {
+type StartPageProps = {
+  searchParams: Promise<{
+    sessionId?: string
+  }>
+}
+export default async function StartPage({ searchParams }: StartPageProps) {
   const profile = await getProfile()
 
-  const data = await getStartPageData({ profileId: profile.id })
+  const param = await searchParams
+  const sessionId = typeof param.sessionId === 'string' ? param.sessionId : undefined
+
+  const data = await getStartPageData({ profileId: profile.id, sessionId: sessionId })
   const date = new Date()
   const initialCalendarData = await getCalendarData({
     profileId: profile.id,

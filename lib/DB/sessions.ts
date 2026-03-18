@@ -121,3 +121,18 @@ export async function listSessionDetailsByWorkout(workoutId: string) {
 
   return data ?? []
 }
+
+export async function listCompletedSessionsByMonth(profileId: string, from: string, to: string) {
+  const supabase = await getSupabase()
+  const { data, error } = await supabase
+    .from('workout_sessions')
+    .select('id, ended_at')
+    .eq('profile_id', profileId)
+    .gte('ended_at', from)
+    .lt('ended_at', to)
+    .order('ended_at', { ascending: true })
+
+  if (error) throw error
+
+  return data
+}

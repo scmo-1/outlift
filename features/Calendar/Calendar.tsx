@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import type { CalendarMonthData } from '@/types/Calendar'
+import CalendarGrid from './components/CalendarGrid'
 
 // const endpoint = `/api/calendar?month=${}&year=${}`
 
@@ -32,7 +33,7 @@ function Calendar({ initialData }: CalendarProps) {
           <DialogTitle>Calendar</DialogTitle>
           <DialogClose />
         </DialogHeader>
-        Calendar
+        <CalendarGrid data={calendarData.days} />
       </DialogContent>
     </Dialog>
   )

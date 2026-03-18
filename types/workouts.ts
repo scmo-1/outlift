@@ -25,3 +25,10 @@ export type WorkoutDetailsSet = {
   reps: number
   rir: number
 }
+
+export type sessionMeta = {
+  id: string
+  workout_id: string
+  started_at: string
+  ended_at: string
+}

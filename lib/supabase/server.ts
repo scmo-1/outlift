@@ -5,35 +5,27 @@ function getSupabaseEnv() {
   const target = process.env.NEXT_PUBLIC_SUPABASE_TARGET
 
   if (target === 'local') {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL_LOCAL
-    const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY_LOCAL
-
-    if (!url || !publishableKey) {
-      throw new Error('Missing local Supabase environment variables')
+    return {
+      url: process.env.NEXT_PUBLIC_SUPABASE_URL_LOCAL!,
+      key: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY_LOCAL!,
     }
-
-    return { url, publishableKey }
   }
 
   if (target === 'cloud') {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL_CLOUD
-    const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY_CLOUD
-
-    if (!url || !publishableKey) {
-      throw new Error('Missing cloud Supabase environment variables')
+    return {
+      url: process.env.NEXT_PUBLIC_SUPABASE_URL_CLOUD!,
+      key: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY_CLOUD!,
     }
-
-    return { url, publishableKey }
   }
 
-  throw new Error('Invalid NEXT_PUBLIC_SUPABASE_TARGET. Expected "local" or "cloud"')
+  throw new Error('Invalid NEXT_PUBLIC_SUPABASE_TARGET')
 }
 
 export async function createClient() {
   const cookieStore = await cookies()
-  const { url, publishableKey } = getSupabaseEnv()
+  const { url, key } = getSupabaseEnv()
 
-  return createServerClient(url, publishableKey, {
+  return createServerClient(url, key, {
     cookies: {
       getAll() {
         return cookieStore.getAll()
@@ -41,9 +33,7 @@ export async function createClient() {
       setAll(cookiesToSet) {
         try {
           cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-        } catch {
-          // kan triggas från Server Components – ok om du har middleware som refreshar session
-        }
+        } catch {}
       },
     },
   })

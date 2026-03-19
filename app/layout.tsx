@@ -17,6 +17,9 @@ const jetBrains_mono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'Outlift',
   description: 'Training app for the minimalist',
+  icons: {
+    icon: '/icon.svg',
+  },
 }
 
 export default function RootLayout({

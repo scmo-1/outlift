@@ -1,7 +1,7 @@
-import type { Exercise, PlannedExercise, SessionExerciseRow } from '@/types/models'
+import type { ExerciseRow, PlannedExercise, SessionExerciseRow } from '@/types/models'
 import { getSupabase } from './utils'
 
-export async function listAllExercises(): Promise<Exercise[]> {
+export async function listAllExercises(): Promise<ExerciseRow[]> {
   const supabase = await getSupabase()
   const { data, error } = await supabase
     .from('exercises')
@@ -15,7 +15,7 @@ export async function listAllExercises(): Promise<Exercise[]> {
   return data ?? []
 }
 
-export async function getSingleExercise(exerciseId: string): Promise<Exercise | null> {
+export async function getSingleExercise(exerciseId: string): Promise<ExerciseRow | null> {
   const supabase = await getSupabase()
   const { data, error } = await supabase
     .from('exercises')
@@ -28,7 +28,7 @@ export async function getSingleExercise(exerciseId: string): Promise<Exercise | 
   return data ?? null
 }
 
-export async function listExercisesByBodypart(bodypart: string): Promise<Exercise[]> {
+export async function listExercisesByBodypart(bodypart: string): Promise<ExerciseRow[]> {
   const supabase = await getSupabase()
   const { data, error } = await supabase
     .from('exercise')

@@ -1,7 +1,11 @@
 import { requireUser } from '@/lib/auth/requireUser'
+import { getProgramsPageData } from '@/lib/services/getProgramsPageData'
 
 export default async function ProgramsPage() {
-  const user = await requireUser()
+  const profile = await requireUser()
+  const PageData = await getProgramsPageData(profile.id)
+
+  console.log(PageData)
 
   return (
     <div>

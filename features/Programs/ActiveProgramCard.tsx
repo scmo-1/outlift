@@ -16,9 +16,11 @@ function ActiveProgramCard({ program }: Props) {
             className="p-2 bg-secondary rounded-xl border-b border-b-accent flex flex-col gap-2"
           >
             <span>{workout.name}</span>
-            <p className="text-sm line-clamp-1 truncate">
-              {workout.plannedExercises.map((ex) => ex.exercise.name).join(', ')}
-            </p>
+            <span className="line-clamp-1 truncate w-full overflow-x-scroll p-2 bg-sidebar-accent rounded-xl">
+              <p className="text-sm">
+                {workout.plannedExercises.map((ex) => ex.exercise.name).join(', ')}
+              </p>
+            </span>
           </li>
         ))}
       </ul>

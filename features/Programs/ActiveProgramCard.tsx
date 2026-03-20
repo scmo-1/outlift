@@ -1,5 +1,6 @@
 import type { ProgramWithDetails } from '@/types/programs'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 type Props = {
   program: ProgramWithDetails
@@ -7,27 +8,33 @@ type Props = {
 
 function ActiveProgramCard({ program }: Props) {
   return (
-    <div className="bg-card p-3 border border-accent rounded-xl">
-      <h3 className="font-semibold mb-3">{program.name}</h3>
-      <ul className="space-y-2">
-        {program.workouts.map((workout) => (
-          <li
-            key={workout.id}
-            className="p-2 bg-secondary rounded-xl border-b border-b-accent flex flex-col gap-2"
-          >
-            <span>{workout.name}</span>
-            <span className="line-clamp-1 truncate w-full overflow-x-scroll p-2 bg-sidebar-accent rounded-xl">
-              <p className="text-sm">
-                {workout.plannedExercises.map((ex) => ex.exercise.name).join(', ')}
-              </p>
-            </span>
-          </li>
-        ))}
-      </ul>
-      <Button variant="outline" className="w-full mt-6 uppercase">
-        view details
-      </Button>
-    </div>
+    <Card className="gap-0 py-3">
+      <CardHeader className="px-3 pb-0">
+        <CardTitle className="text-base font-semibold">{program.name}</CardTitle>
+      </CardHeader>
+      <CardContent className="px-3 pt-3">
+        <ul className="space-y-2">
+          {program.workouts.map((workout) => (
+            <li
+              key={workout.id}
+              className="flex flex-col gap-2 rounded-xl border border-border bg-muted/40 p-3"
+            >
+              <span className="font-medium">{workout.name}</span>
+              <div className="rounded-lg bg-muted px-2 py-2 text-sm text-muted-foreground">
+                <p className="line-clamp-1 truncate">
+                  {workout.plannedExercises.map((ex) => ex.exercise.name).join(', ')}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+      <CardFooter className="px-3 pt-3">
+        <Button variant="outline" className="w-full uppercase">
+          view details
+        </Button>
+      </CardFooter>
+    </Card>
   )
 }
 

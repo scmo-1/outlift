@@ -1,4 +1,4 @@
-import AppCard from '@/components/AppCard'
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 type WorkoutCardProps = {
   title: string
@@ -8,9 +8,13 @@ type WorkoutCardProps = {
 
 function WorkoutCard({ title, sets, children }: WorkoutCardProps) {
   return (
-    <AppCard title={title} extra={sets}>
-      {children}
-    </AppCard>
+    <Card className="gap-0 border-border py-3">
+      <CardHeader className="grid-cols-[1fr_auto] items-center gap-3 px-3 pb-0">
+        <CardTitle className="text-base font-semibold">{title}</CardTitle>
+        <CardAction className="text-sm font-medium text-muted-foreground">{sets}</CardAction>
+      </CardHeader>
+      <CardContent className="px-3 pt-3">{children}</CardContent>
+    </Card>
   )
 }
 

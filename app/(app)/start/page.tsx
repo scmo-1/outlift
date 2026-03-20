@@ -3,6 +3,8 @@ import { getStartPageData } from '@/lib/services/getStartPageData'
 import { WorkoutList } from '@/features/Workouts'
 import { getCalendarData } from '@/lib/services/getCalendarData'
 import Calendar from '@/features/Calendar/Calendar'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 type StartPageProps = {
   searchParams: Promise<{
@@ -31,6 +33,16 @@ export default async function StartPage({ searchParams }: StartPageProps) {
         <Calendar initialData={initialCalendarData} />
       </div>
       <WorkoutList exercises={data.workout.exercises} previousLimit={1} />
+      <div className="flex flex-col gap-3 w-full">
+        <Link href="/session">
+          <Button className="w-full">start session</Button>
+        </Link>
+        <Link href="/">
+          <Button className="w-full" variant="outline">
+            view details
+          </Button>
+        </Link>
+      </div>
     </div>
   )
 }

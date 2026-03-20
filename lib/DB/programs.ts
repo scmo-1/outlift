@@ -37,7 +37,18 @@ export async function getActiveProgramWithDetails(
   const supabase = await getSupabase()
   const { data, error } = await supabase
     .from('programs')
-    .select(`*, workouts:program_workouts (*, exercises:program_workout_exercises (*))`)
+    .select(
+      `
+  *,
+  workouts:program_workouts (
+    *,
+    plannedExercises:program_workout_exercises (
+      *,
+      exercise:exercises (*)
+    )
+  )
+`,
+    )
     .eq('profile_id', profileId)
     .is('is_active', true)
     .single()

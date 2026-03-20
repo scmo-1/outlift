@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import type { CalendarMonthData } from '@/types/Calendar'
 import CalendarGrid from './components/CalendarGrid'
 
@@ -20,13 +21,12 @@ type CalendarProps = {
 
 function Calendar({ initialData }: CalendarProps) {
   const [calendarData, setCalendarData] = useState<CalendarMonthData>(initialData)
-
-  console.log(calendarData)
-
   return (
     <Dialog>
-      <DialogTrigger>
-        <CalendarIcon />
+      <DialogTrigger asChild>
+        <Button variant="outline" className="rounded-xl">
+          <CalendarIcon color="#daebd4" />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

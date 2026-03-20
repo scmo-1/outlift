@@ -1,10 +1,11 @@
 import { getProfile } from '@/lib/auth/getProfile'
 import { getStartPageData } from '@/lib/services/getStartPageData'
-import { WorkoutList } from '@/features/Workouts'
+import WorkoutList from '@/features/StartPage/WorkoutList'
 import { getCalendarData } from '@/lib/services/getCalendarData'
-import Calendar from '@/features/Calendar/Calendar'
+import Calendar from '@/features/StartPage/Calendar'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import StartSessionButton from '@/features/StartPage/Components/StartSessionButton'
 
 type StartPageProps = {
   searchParams: Promise<{
@@ -38,11 +39,7 @@ export default async function StartPage({ searchParams }: StartPageProps) {
         </Link>
       )}
       <WorkoutList exercises={data.workout.exercises} previousLimit={1} />
-      {data.mode === 'default' && (
-        <Link href="/session">
-          <Button className="w-full">start session</Button>
-        </Link>
-      )}
+      {data.mode === 'default' && <StartSessionButton />}
     </div>
   )
 }

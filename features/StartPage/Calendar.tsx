@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import type { CalendarMonthData } from '@/types/Calendar'
-import CalendarGrid from './components/CalendarGrid'
+import CalendarGrid from './Components/CalendarGrid'
 
 // const endpoint = `/api/calendar?month=${}&year=${}`
 

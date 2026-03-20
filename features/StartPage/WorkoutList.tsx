@@ -1,5 +1,5 @@
 import type { WorkoutDetailsExercise } from '@/types/workouts'
-import WorkoutCard from './WorkoutCard'
+import WorkoutCard from '../StartPage/Components/WorkoutCard'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeftRight } from 'lucide-react'
 

@@ -33,16 +33,18 @@ export default async function StartPage({ searchParams }: StartPageProps) {
         <Calendar initialData={initialCalendarData} />
       </div>
       <WorkoutList exercises={data.workout.exercises} previousLimit={1} />
-      <div className="flex flex-col gap-3 w-full">
-        <Link href="/session">
-          <Button className="w-full">start session</Button>
-        </Link>
-        <Link href="/">
-          <Button className="w-full" variant="outline">
-            view details
-          </Button>
-        </Link>
-      </div>
+      {data.mode === 'default' && (
+        <div className="flex flex-col gap-3 w-full">
+          <Link href="/session">
+            <Button className="w-full">start session</Button>
+          </Link>
+          <Link href="/">
+            <Button className="w-full" variant="outline">
+              view details
+            </Button>
+          </Link>
+        </div>
+      )}
     </div>
   )
 }

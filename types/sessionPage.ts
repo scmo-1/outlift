@@ -1,20 +1,27 @@
-export type SessionPageExercise = {
+type SessionPageSetHistory = {
+  sessionId: string
+  endedAt: string | null
+  weight: number
+  reps: number
+  rir: number
+}
+
+type SessionPageSet = {
+  setIndex: number
+  history: SessionPageSetHistory[]
+}
+
+type SessionPageExercise = {
   sessionExerciseId: string
-  plannedExerciseId: string | null
+  exerciseId: string | null
   name: string
-  sets: {
-    setIndex: number
-    current?: {
-      weight?: number
-      reps?: number
-      rir?: number
-    }
-    history: {
-      sessionId: string
-      endedAt: string | null
-      weight: number
-      reps: number
-      rir: number
-    }[]
-  }[]
+  inSessionIndex: number
+  sets: SessionPageSet[]
+}
+
+export type SessionPageData = {
+  sessionId: string
+  workoutId: string
+  workoutName: string
+  exercises: SessionPageExercise[]
 }

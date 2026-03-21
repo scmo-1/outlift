@@ -24,7 +24,7 @@ export async function getActiveSession(profileId: string): Promise<WorkoutSessio
     .select('*')
     .eq('profile_id', profileId)
     .is('ended_at', null)
-    .maybeSingle()
+    .single()
 
   if (error) throw error
 

@@ -1,6 +1,7 @@
 import { getSupabase } from './utils'
-import { WorkoutSessionRow } from '@/types/models'
+import { WorkoutSessionRow, SessionExerciseRow } from '@/types/models'
 import type { sessionMeta } from '@/types/workouts'
+import { getWorkout } from './workouts'
 
 export async function listCompletedSessions(profileId: string): Promise<WorkoutSessionRow[]> {
   const supabase = await getSupabase()
@@ -64,6 +65,7 @@ export async function getSessionDetailsById(sessionId: string, profileId: string
           id,
           session_exercise_id,
           set_index,
+          status,
           weight,
           reps,
           rir,
@@ -105,6 +107,7 @@ export async function listSessionDetailsByWorkout(workoutId: string) {
           id,
           session_exercise_id,
           set_index,
+          status,
           weight,
           reps,
           rir,
@@ -135,4 +138,113 @@ export async function listCompletedSessionsByMonth(profileId: string, from: stri
   if (error) throw error
 
   return data
+}
+
+export async function createWorkoutSession(
+  profileId: string,
+  workoutId: string,
+): Promise<WorkoutSessionRow> {
+  const supabase = await getSupabase()
+  const { data, error } = await supabase
+    .from('workout_sessions')
+    .insert({
+      profile_id: profileId,
+      workout_id: workoutId,
+    })
+    .select('*')
+    .single()
+
+  if (error) throw error
+
+  return data
+}
+
+export async function endWorkoutSession(sessionId: string): Promise<WorkoutSessionRow> {
+  const supabase = await getSupabase()
+  const { data, error } = await supabase
+    .from('workout_sessions')
+    .update({
+      ended_at: new Date().toISOString(),
+    })
+    .eq('id', sessionId)
+    .select('*')
+    .single()
+
+  if (error) throw error
+
+  return data
+}
+
+export async function createSessionExercises(
+  sessionId: string,
+  workoutId: string,
+): Promise<SessionExerciseRow[]> {
+  const supabase = await getSupabase()
+  const workout = await getWorkout(workoutId)
+
+  if (!workout) {
+    throw new Error('Workout not found')
+  }
+
+  const rows = workout.plannedExercises.map((planned) => ({
+    session_id: sessionId,
+    exercise_id: planned.exercise_id,
+    exercise_name: planned.exercise.name,
+    in_session_index: planned.in_workout_index,
+    planned_exercise_id: null,
+  }))
+
+  const { data, error } = await supabase.from('session_exercises').insert(rows).select('*')
+
+  if (error) throw error
+
+  return data ?? []
+}
+
+export async function listRecentCompletedSessionsByWorkout(
+  profileId: string,
+  workoutId: string,
+  limit = 3,
+) {
+  const supabase = await getSupabase()
+
+  const { data, error } = await supabase
+    .from('workout_sessions')
+    .select(
+      `
+      id,
+      workout_id,
+      profile_id,
+      created_at,
+      started_at,
+      ended_at,
+      session_exercises (
+        id,
+        session_id,
+        exercise_id,
+        exercise_name,
+        in_session_index,
+        planned_exercise_id,
+        sets (
+          id,
+          session_exercise_id,
+          set_index,
+          status,
+          weight,
+          reps,
+          rir,
+          created_at
+        )
+      )
+      `,
+    )
+    .eq('profile_id', profileId)
+    .eq('workout_id', workoutId)
+    .not('ended_at', 'is', null)
+    .order('ended_at', { ascending: false })
+    .limit(limit)
+
+  if (error) throw error
+
+  return data ?? []
 }

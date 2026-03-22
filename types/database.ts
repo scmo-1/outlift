@@ -264,29 +264,32 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          reps: number
-          rir: number
+          reps: number | null
+          rir: number | null
           session_exercise_id: string
           set_index: number
-          weight: number
+          status: string
+          weight: number | null
         }
         Insert: {
           created_at?: string
           id?: string
-          reps: number
-          rir: number
+          reps?: number | null
+          rir?: number | null
           session_exercise_id: string
           set_index: number
-          weight: number
+          status?: string
+          weight?: number | null
         }
         Update: {
           created_at?: string
           id?: string
-          reps?: number
-          rir?: number
+          reps?: number | null
+          rir?: number | null
           session_exercise_id?: string
           set_index?: number
-          weight?: number
+          status?: string
+          weight?: number | null
         }
         Relationships: [
           {

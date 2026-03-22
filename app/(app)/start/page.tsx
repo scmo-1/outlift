@@ -1,8 +1,11 @@
 import { getProfile } from '@/lib/auth/getProfile'
 import { getStartPageData } from '@/lib/services/getStartPageData'
-import { WorkoutList } from '@/features/Workouts'
+import WorkoutList from '@/features/StartPage/WorkoutList'
 import { getCalendarData } from '@/lib/services/getCalendarData'
-import Calendar from '@/features/Calendar/Calendar'
+import Calendar from '@/features/StartPage/Calendar'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import StartSessionButton from '@/features/StartPage/Components/StartSessionButton'
 
 type StartPageProps = {
   searchParams: Promise<{
@@ -24,13 +27,19 @@ export default async function StartPage({ searchParams }: StartPageProps) {
   })
 
   return (
-    <div className="flex flex-col gap-5 pt-5">
+    <div className="flex flex-col gap-5 pt-5 pb-20">
       <h1>weclome {profile.username}</h1>
       <div className="flex justify-between">
         <h2>{data.workout.name}</h2>
         <Calendar initialData={initialCalendarData} />
       </div>
+      {data.mode === 'completed' && (
+        <Link href="/start">
+          <Button variant="outline">back to today</Button>
+        </Link>
+      )}
       <WorkoutList exercises={data.workout.exercises} previousLimit={1} />
+      {data.mode === 'default' && <StartSessionButton />}
     </div>
   )
 }

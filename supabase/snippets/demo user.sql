@@ -8,8 +8,8 @@ with
         from
             public.profiles
         where
-            id = 'e1a95eb6-6b7d-4cf5-9e49-27753dda7b83'
-            and email = 'me@scmo.dev'
+            id = 'ed837b3b-d199-4bd4-b0fb-6e0ee7d2d83b'
+            and email = 'test@mail.com'
         limit
             1
     ),

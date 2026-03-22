@@ -1,4 +1,3 @@
-import { getActiveProgram } from '../DB/programs'
 import { getNextWorkout } from './getNextWorkout'
 import { getWorkoutDetails } from './getWorkoutDetails'
 import { type WorkoutDetails } from '@/types/workouts'
@@ -18,9 +17,6 @@ export async function getStartPageData({
   profileId,
   sessionId,
 }: GetStartPageParams): Promise<StartPageData> {
-  const activeProgram = await getActiveProgram(profileId)
-  if (!activeProgram) throw new Error('No active program found')
-
   if (sessionId) {
     const session = await getSessionMetaById(sessionId)
     if (!session) throw new Error('No session found')

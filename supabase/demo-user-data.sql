@@ -1533,6 +1533,7 @@ insert into
     public.sets (
         session_exercise_id,
         set_index,
+        status,
         weight,
         reps,
         rir,
@@ -1541,6 +1542,7 @@ insert into
 select
     ase.id,
     set_data.set_index,
+    'completed',
     case
         when ase.in_session_index = 1 then
             set_data.weight_base + 40

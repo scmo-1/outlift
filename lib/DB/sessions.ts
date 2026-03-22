@@ -24,7 +24,7 @@ export async function getActiveSession(profileId: string): Promise<WorkoutSessio
     .select('*')
     .eq('profile_id', profileId)
     .is('ended_at', null)
-    .single()
+    .maybeSingle()
 
   if (error) throw error
 
@@ -65,6 +65,7 @@ export async function getSessionDetailsById(sessionId: string, profileId: string
           id,
           session_exercise_id,
           set_index,
+          status,
           weight,
           reps,
           rir,
@@ -106,6 +107,7 @@ export async function listSessionDetailsByWorkout(workoutId: string) {
           id,
           session_exercise_id,
           set_index,
+          status,
           weight,
           reps,
           rir,
@@ -149,6 +151,22 @@ export async function createWorkoutSession(
       profile_id: profileId,
       workout_id: workoutId,
     })
+    .select('*')
+    .single()
+
+  if (error) throw error
+
+  return data
+}
+
+export async function endWorkoutSession(sessionId: string): Promise<WorkoutSessionRow> {
+  const supabase = await getSupabase()
+  const { data, error } = await supabase
+    .from('workout_sessions')
+    .update({
+      ended_at: new Date().toISOString(),
+    })
+    .eq('id', sessionId)
     .select('*')
     .single()
 
@@ -211,6 +229,7 @@ export async function listRecentCompletedSessionsByWorkout(
           id,
           session_exercise_id,
           set_index,
+          status,
           weight,
           reps,
           rir,

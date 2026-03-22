@@ -31,6 +31,7 @@ export async function getWorkoutDetails(workoutId: string): Promise<WorkoutDetai
           weight: set.weight,
           reps: set.reps,
           rir: set.rir,
+          status: set.status === 'skipped' ? 'skipped' : 'completed',
         }))
 
         return {

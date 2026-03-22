@@ -25,6 +25,7 @@ export async function getSessionPageData(profileId: string): Promise<SessionPage
 
     const sets = Array.from({ length: workoutExercise.sets }, (_, index) => {
       const setIndex = index + 1
+      const currentSet = sessionExercise.sets.find((set) => set.set_index === setIndex)
 
       const history = workoutExercise.previous.slice(0, 3).flatMap((previousSession) => {
         const matchingSet = previousSession.sets.find((set) => set.setIndex === setIndex)
@@ -38,6 +39,7 @@ export async function getSessionPageData(profileId: string): Promise<SessionPage
             weight: matchingSet.weight,
             reps: matchingSet.reps,
             rir: matchingSet.rir,
+            status: matchingSet.status,
           },
         ]
       })
@@ -45,6 +47,17 @@ export async function getSessionPageData(profileId: string): Promise<SessionPage
       return {
         setIndex,
         history,
+        current: currentSet
+          ? {
+              weight: currentSet.weight,
+              reps: currentSet.reps,
+              rir: currentSet.rir,
+              status:
+                currentSet.status === 'skipped'
+                  ? ('skipped' as const)
+                  : ('completed' as const),
+            }
+          : null,
       }
     })
 

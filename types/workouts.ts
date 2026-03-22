@@ -21,9 +21,10 @@ export type WorkoutDetailsSession = {
 
 export type WorkoutDetailsSet = {
   setIndex: number
-  weight: number
-  reps: number
-  rir: number
+  weight: number | null
+  reps: number | null
+  rir: number | null
+  status: 'completed' | 'skipped'
 }
 
 export type sessionMeta = {

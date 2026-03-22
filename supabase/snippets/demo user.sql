@@ -8,7 +8,7 @@ with
         from
             public.profiles
         where
-            id = 'c1802f4b-b39f-4409-a59a-21fa094244b6'
+            id = 'ed837b3b-d199-4bd4-b0fb-6e0ee7d2d83b'
             and email = 'test@mail.com'
         limit
             1
@@ -1533,6 +1533,7 @@ insert into
     public.sets (
         session_exercise_id,
         set_index,
+        status,
         weight,
         reps,
         rir,
@@ -1541,6 +1542,7 @@ insert into
 select
     ase.id,
     set_data.set_index,
+    'completed',
     case
         when ase.in_session_index = 1 then
             set_data.weight_base + 40

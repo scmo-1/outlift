@@ -1,17 +1,26 @@
-type SessionPageSetHistory = {
+export type SessionPageSetHistory = {
   sessionId: string
   endedAt: string | null
-  weight: number
-  reps: number
-  rir: number
+  weight: number | null
+  reps: number | null
+  rir: number | null
+  status: 'completed' | 'skipped'
 }
 
-type SessionPageSet = {
+export type SessionPageCurrentSet = {
+  weight: number | null
+  reps: number | null
+  rir: number | null
+  status: 'completed' | 'skipped'
+}
+
+export type SessionPageSet = {
   setIndex: number
   history: SessionPageSetHistory[]
+  current: SessionPageCurrentSet | null
 }
 
-type SessionPageExercise = {
+export type SessionPageExercise = {
   sessionExerciseId: string
   exerciseId: string | null
   name: string

@@ -15,6 +15,7 @@ export type ProgressHistoryItem = {
   weight: number
   reps: number
   rir: number
+  e1rm: number
   status: 'completed'
 }
 

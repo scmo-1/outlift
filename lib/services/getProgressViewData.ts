@@ -4,6 +4,7 @@ import {
   listCompletedSessionsWithExerciseHistoryByWorkoutIds,
   type ProgressSessionRow,
 } from '../DB/progression'
+import { calculateE1rm } from '../utils'
 import type {
   ProgressExerciseOption,
   ProgressHistoryItem,
@@ -92,6 +93,7 @@ function buildHistoryFromSessions(sessions: ProgressSessionRow[]): ProgressHisto
             weight,
             reps,
             rir,
+            e1rm: calculateE1rm({ weight, reps, rir }),
             status: 'completed' as const,
           },
         ]

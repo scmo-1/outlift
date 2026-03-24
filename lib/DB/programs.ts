@@ -130,3 +130,35 @@ export async function createProgram(profileId: string, programDraft: ProgramDraf
 
   return program
 }
+
+export async function activateProgram(profileId: string, programId: string): Promise<void> {
+  const supabase = await getSupabase()
+
+  const { data: matchingProgram, error: programLookupError } = await supabase
+    .from('programs')
+    .select('id')
+    .eq('id', programId)
+    .eq('profile_id', profileId)
+    .maybeSingle()
+
+  if (programLookupError) throw programLookupError
+
+  if (!matchingProgram) {
+    throw new Error('Program not found')
+  }
+
+  const { error: deactivateError } = await supabase
+    .from('programs')
+    .update({ is_active: false })
+    .eq('profile_id', profileId)
+
+  if (deactivateError) throw deactivateError
+
+  const { error: activateError } = await supabase
+    .from('programs')
+    .update({ is_active: true })
+    .eq('id', programId)
+    .eq('profile_id', profileId)
+
+  if (activateError) throw activateError
+}

@@ -1,6 +1,7 @@
 'use client'
 import type { ProgressViewData } from '@/types/progression'
 import ProgressCard from './ProgressCard'
+import ProgressChart from './ProgressChart'
 import { useState } from 'react'
 import {
   Select,
@@ -24,11 +25,18 @@ function StatsSection({ data }: PageData) {
   }
 
   const filteredHistory = data.history.filter((item) => item.exerciseId === selected)
+  const chartData = filteredHistory.map((item) => ({
+    date: new Date(item.endedAt).toLocaleDateString('sv-SE', {
+      month: 'short',
+      day: 'numeric',
+    }),
+    e1rm: item.e1rm,
+  }))
 
   return (
-    <>
+    <div className="flex flex-col gap-5">
       <Select value={selected} onValueChange={handleSelect}>
-        <SelectTrigger>
+        <SelectTrigger className="w-full sm:w-64 my-5">
           <SelectValue placeholder="select a exercise" />
         </SelectTrigger>
         <SelectContent>
@@ -43,7 +51,8 @@ function StatsSection({ data }: PageData) {
         </SelectContent>
       </Select>
       <ProgressCard data={filteredHistory} />
-    </>
+      <ProgressChart data={chartData} />
+    </div>
   )
 }
 

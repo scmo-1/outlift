@@ -1,14 +1,24 @@
 'use client'
 import { Input } from '@/components/ui/input'
 import Paginator from '../Paginator/Paginator'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import ExercisesList from './components/ExercisesList'
 import type { ExerciseDraft, ExerciseDraftSet, ExerciseItem } from '@/types/createProgram'
 import type { ProgramDraft, WorkoutDraft } from '@/types/createProgram'
 
 type CreatePageProps = {
   exercises: ExerciseItem[]
+  createProgramAction: (programDraft: ProgramDraft) => Promise<unknown>
 }
 
 const createEmptyWorkout = (index: number): WorkoutDraft => ({
@@ -42,8 +52,10 @@ const reindexExercises = (exerciseDrafts: ExerciseDraft[]): ExerciseDraft[] =>
     })),
   }))
 
-function CreateProgramPage({ exercises }: CreatePageProps) {
+function CreateProgramPage({ exercises, createProgramAction }: CreatePageProps) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const [isCreateErrorOpen, setIsCreateErrorOpen] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [programDraft, setProgramDraft] = useState<ProgramDraft>({
     name: '',
     workouts: [createEmptyWorkout(0)],
@@ -186,61 +198,83 @@ function CreateProgramPage({ exercises }: CreatePageProps) {
     )
   }
 
+  const handleCreateProgram = () => {
+    startTransition(async () => {
+      try {
+        await createProgramAction(programDraft)
+      } catch {
+        setIsCreateErrorOpen(true)
+      }
+    })
+  }
+
   const activeWorkout = programDraft.workouts[activeIndex]
 
   return (
-    <div className="flex flex-col gap-3 w-full pb-10">
-      <label>
-        Program name
-        <Input
-          type="text"
-          placeholder="name..."
-          value={programDraft.name}
-          onChange={(e) => setProgramDraft((prev) => ({ ...prev, name: e.target.value }))}
-        />
-      </label>
-      <label>
-        amount of workouts
-        <Input
-          type="number"
-          placeholder="amount"
-          min={1}
-          value={programDraft.workouts.length}
-          onChange={(e) => handleWorkoutAmount(Number(e.target.value))}
-        />
-      </label>
-      <Paginator
-        pages={programDraft.workouts.length}
-        currentPage={activeIndex}
-        onNext={handleNextIndex}
-        onPrevious={handlePrevIndex}
-        onPageChange={setActiveIndex}
-      />
-      <section>
+    <>
+      <div className="flex flex-col gap-3 w-full pb-10">
         <label>
-          workout name
+          Program name
           <Input
             type="text"
-            placeholder={`Workout ${activeIndex + 1}`}
-            value={activeWorkout?.name ?? ''}
-            onChange={(e) => handleWorkoutNameChange(e.target.value)}
+            placeholder="name..."
+            value={programDraft.name}
+            onChange={(e) => setProgramDraft((prev) => ({ ...prev, name: e.target.value }))}
           />
         </label>
-        <ExercisesList
-          exerciseOptions={exercises}
-          exercises={activeWorkout?.exercises ?? []}
-          onAddExercise={handleAddExercise}
-          onExerciseChange={handleExerciseChange}
-          onExerciseSetsChange={handleExerciseSetsChange}
-          onRepGoalChange={handleRepGoalChange}
-          onMoveExercise={handleMoveExercise}
-          onRemoveExercise={handleRemoveExercise}
+        <label>
+          amount of workouts
+          <Input
+            type="number"
+            placeholder="amount"
+            min={1}
+            value={programDraft.workouts.length}
+            onChange={(e) => handleWorkoutAmount(Number(e.target.value))}
+          />
+        </label>
+        <Paginator
+          pages={programDraft.workouts.length}
+          currentPage={activeIndex}
+          onNext={handleNextIndex}
+          onPrevious={handlePrevIndex}
+          onPageChange={setActiveIndex}
         />
-      </section>
-      <Button className="" type="button">
-        Create Program
-      </Button>
-    </div>
+        <section>
+          <label>
+            workout name
+            <Input
+              type="text"
+              placeholder={`Workout ${activeIndex + 1}`}
+              value={activeWorkout?.name ?? ''}
+              onChange={(e) => handleWorkoutNameChange(e.target.value)}
+            />
+          </label>
+          <ExercisesList
+            exerciseOptions={exercises}
+            exercises={activeWorkout?.exercises ?? []}
+            onAddExercise={handleAddExercise}
+            onExerciseChange={handleExerciseChange}
+            onExerciseSetsChange={handleExerciseSetsChange}
+            onRepGoalChange={handleRepGoalChange}
+            onMoveExercise={handleMoveExercise}
+            onRemoveExercise={handleRemoveExercise}
+          />
+        </section>
+        <Button type="button" onClick={handleCreateProgram} disabled={isPending}>
+          {isPending ? <Spinner /> : null}
+          Create Program
+        </Button>
+      </div>
+      <Dialog open={isCreateErrorOpen} onOpenChange={setIsCreateErrorOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Could not create program</DialogTitle>
+            <DialogDescription>Something went wrong.</DialogDescription>
+          </DialogHeader>
+          <DialogFooter showCloseButton />
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 

@@ -33,6 +33,14 @@ function StatsSection({ data }: PageData) {
     e1rm: item.e1rm,
   }))
 
+  if (data.exerciseOptions.length === 0) {
+    return (
+      <div className="rounded-xl border border-dashed bg-card p-6 text-sm text-muted-foreground">
+        No history recorded yet.
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-5">
       <Select value={selected} onValueChange={handleSelect}>
@@ -50,6 +58,11 @@ function StatsSection({ data }: PageData) {
           </SelectGroup>
         </SelectContent>
       </Select>
+      {filteredHistory.length === 0 && (
+        <div className="rounded-xl border border-dashed bg-card p-4 text-sm text-muted-foreground">
+          No history recorded yet for this exercise.
+        </div>
+      )}
       <ProgressCard data={filteredHistory} />
       <ProgressChart data={chartData} />
     </div>

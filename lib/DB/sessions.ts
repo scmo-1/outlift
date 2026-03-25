@@ -24,11 +24,11 @@ export async function getActiveSession(profileId: string): Promise<WorkoutSessio
     .select('*')
     .eq('profile_id', profileId)
     .is('ended_at', null)
-    .maybeSingle()
+    .limit(1)
 
   if (error) throw error
 
-  return data ?? null
+  return data?.[0] ?? null
 }
 
 export async function getSessionMetaById(sessionId: string): Promise<sessionMeta> {
@@ -137,7 +137,7 @@ export async function listCompletedSessionsByMonth(profileId: string, from: stri
 
   if (error) throw error
 
-  return data
+  return data ?? []
 }
 
 export async function createWorkoutSession(

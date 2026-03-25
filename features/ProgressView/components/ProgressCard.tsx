@@ -11,6 +11,17 @@ function ProgressCard({ data }: ProgressCardProps) {
   const firstItem = data[0] ?? null
   const latestItem = data.at(-1) ?? null
 
+  if (!firstItem || !latestItem) {
+    return (
+      <Card>
+        <CardTitle>Progression</CardTitle>
+        <CardContent className="text-sm text-muted-foreground">
+          No history recorded yet.
+        </CardContent>
+      </Card>
+    )
+  }
+
   const comparison =
     latestItem && firstItem ? Math.round((latestItem.e1rm - firstItem.e1rm) * 100) / 100 : null
 

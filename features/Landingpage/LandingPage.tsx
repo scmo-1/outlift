@@ -11,10 +11,10 @@ export default function LandingPage() {
     <div className="w-full">
       <h1 className="flex flex-col">
         <span className={clsx(headingCn, 'text-stroke')}>outlift</span>
-        <span className={clsx(headingCn, 'text-[#ffffff22]')}>outlift</span>
+        <span className={clsx(headingCn, 'text-[#daebd481]')}>outlift</span>
         <span className={clsx(headingCn, 'text-stroke')}>outlift</span>
         <span className={clsx(headingCn, 'text-stroke')}>outlift</span>
-        <span className={clsx(headingCn, 'text-[#ffffff22]')}>outlift</span>
+        <span className={clsx(headingCn, 'text-[#daebd481]')}>outlift</span>
       </h1>
       <div className="flex flex-col gap-2 mt-15 px-10">
         <LinkButton href="/start" label="launch app" />

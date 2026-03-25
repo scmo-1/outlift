@@ -1,22 +1,25 @@
 'use client'
 import LinkButton from '@/components/LinkButton'
-import OutliftLogo from '@/components/OutliftLogo'
+import { cn } from '@/lib/utils'
+import clsx from 'clsx'
 
 export default function LandingPage() {
+  const headingCn = cn(
+    'uppercase font-black font-mono text-[85px] leading-18 md:text-[120px] md:leading-23',
+  )
   return (
     <div className="w-full">
-      <section className="relative h-180">
-        <div className="flex flex-col gap-2 items-center absolute top-1/3 left-1/2 -translate-x-1/2 z-10">
-          <OutliftLogo className="text-background h-auto w-90" />
-          <p className="capitalize text-background font-semibold w-full text-nowrap text-center">
-            track your workouts. See your progression.
-          </p>
-          <div className="mt-15 flex flex-col gap-4">
-            <LinkButton label="Launch App" href="/start" />
-            <LinkButton label="Create Account" href="/signup" variant="outline" />
-          </div>
-        </div>
-      </section>
+      <h1 className="flex flex-col">
+        <span className={clsx(headingCn, 'text-stroke')}>outlift</span>
+        <span className={clsx(headingCn, 'text-black')}>outlift</span>
+        <span className={clsx(headingCn, 'text-stroke')}>outlift</span>
+        <span className={clsx(headingCn, 'text-stroke')}>outlift</span>
+        <span className={clsx(headingCn, 'text-black')}>outlift</span>
+      </h1>
+      <div className="flex flex-col gap-2 mt-15 px-10">
+        <LinkButton href="/start" label="launch app" />
+        <LinkButton href="/signup" variant="outline" label="create account" />
+      </div>
     </div>
   )
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
+import { Plus_Jakarta_Sans, MuseoModerno } from 'next/font/google'
 import './globals.css'
-import Grainient from '@/features/UnderConstruction/components/Grainient'
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: '--font-sans',
@@ -9,7 +8,7 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: 'swap',
 })
 
-const jetBrains_mono = JetBrains_Mono({
+const museoModerno = MuseoModerno({
   variable: '--font-mono',
   subsets: ['latin'],
   display: 'swap',
@@ -30,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${plusJakarta.variable} ${jetBrains_mono.variable} antialiased dark`}>
+      <body className={`${plusJakarta.variable} ${museoModerno.variable} antialiased dark`}>
         {children}
       </body>
     </html>

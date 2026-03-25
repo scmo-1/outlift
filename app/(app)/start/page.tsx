@@ -31,7 +31,7 @@ export default async function StartPage({ searchParams }: StartPageProps) {
     <div className="flex flex-col gap-5 pt-5 pb-20">
       <h1>weclome {profile.username}</h1>
       <div className="flex justify-between">
-        <h2>{hasWorkout ? data.workout.name : 'no program created yet'}</h2>
+        <h2>{hasWorkout ? data.workout?.name : 'no program created yet'}</h2>
         <Calendar initialData={initialCalendarData} />
       </div>
       {data.mode === 'completed' && (
@@ -41,7 +41,7 @@ export default async function StartPage({ searchParams }: StartPageProps) {
       )}
       {hasWorkout ? (
         <>
-          <WorkoutList exercises={data.workout.exercises} previousLimit={1} />
+          <WorkoutList exercises={data.workout?.exercises} previousLimit={1} />
           {data.mode === 'default' && <StartSessionButton />}
         </>
       ) : (

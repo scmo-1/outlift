@@ -10,11 +10,15 @@ type LinkButtonProps = {
 
 function LinkButton({ variant = 'filled', href, label }: LinkButtonProps) {
   const linkClasses = clsx(
-    variant === 'filled' ? 'bg-accent text-background' : 'bg-transparent text-accent border-accent',
-    cn('group relative overflow-hidden border border-accent rounded-xl px-4 py-2 uppercase w-full'),
+    variant === 'filled'
+      ? 'bg-accent/40 border-accent/60 text-foreground'
+      : 'bg-transparent text-accent border-ring',
+    cn(
+      'group relative overflow-hidden border border-accent rounded-full px-4 py-2 uppercase w-full',
+    ),
   )
   const textClasses = cn(
-    'absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-in-out font-medium',
+    'absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-in-out font-bold font-sans',
   )
 
   return (

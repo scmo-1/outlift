@@ -8,443 +8,87 @@ with
         from
             public.profiles
         where
-            id = 'e1a95eb6-6b7d-4cf5-9e49-27753dda7b83'
-            and email = 'me@scmo.dev'
+            id = '980a5c41-e1f9-4ed4-b6e2-78ec7399ccb0'
+            and email = 'test@mail.com'
         limit
             1
     ),
-    full_body_program as (
+    exercise_lookup as (
+        select
+            id,
+            name
+        from
+            public.exercises
+        where
+            name in (
+                'Barbell Back Squat',
+                'Incline Dumbbell Press',
+                'Pendlay Row',
+                'Barbell Curl',
+                'Stiff-Leg Deadlift',
+                'Dips',
+                'Neutral Grip Lat Pulldown',
+                'Lateral Raise',
+                'Bulgarian Split Squat',
+                'Overhead Press',
+                'Pull-Up',
+                'Skull Crusher',
+                'Flat Barbell Bench Press',
+                'Barbell Row',
+                'Triceps Pushdown',
+                'Romanian Deadlift',
+                'Leg Extension',
+                'Standing Calf Raise',
+                'Lat Pulldown',
+                'Seated Dumbbell Shoulder Press',
+                'Rear Delt Fly',
+                'Front Squat',
+                'Leg Press',
+                'Seated Leg Curl'
+            )
+    ),
+    inserted_programs as (
         insert into
             public.programs (name, profile_id, is_active, archived_at)
         select
-            'Full Body 3 Day',
+            p.name,
             tp.id,
-            true,
+            p.is_active,
             null
         from
-            target_profile tp returning id,
+            target_profile tp
+            cross join (
+                values
+                    ('Full Body 3 Day', true),
+                    ('Upper / Lower 4 Day', false)
+            ) as p (name, is_active) returning id,
+            name,
             profile_id
     ),
-    upper_lower_program as (
-        insert into
-            public.programs (name, profile_id, is_active, archived_at)
-        select
-            'Upper / Lower 4 Day',
-            tp.id,
-            false,
-            null
-        from
-            target_profile tp returning id,
-            profile_id
-    ),
-    full_body_a as (
+    inserted_workouts as (
         insert into
             public.program_workouts (name, program_id, order_index, archived_at)
         select
-            'Full Body A',
-            p.id,
-            1,
+            w.workout_name,
+            ip.id,
+            w.order_index,
             null
         from
-            full_body_program p returning id
-    ),
-    full_body_b as (
-        insert into
-            public.program_workouts (name, program_id, order_index, archived_at)
-        select
-            'Full Body B',
-            p.id,
-            2,
-            null
-        from
-            full_body_program p returning id
-    ),
-    full_body_c as (
-        insert into
-            public.program_workouts (name, program_id, order_index, archived_at)
-        select
-            'Full Body C',
-            p.id,
-            3,
-            null
-        from
-            full_body_program p returning id
-    ),
-    upper_a as (
-        insert into
-            public.program_workouts (name, program_id, order_index, archived_at)
-        select
-            'Upper A',
-            p.id,
-            1,
-            null
-        from
-            upper_lower_program p returning id
-    ),
-    lower_a as (
-        insert into
-            public.program_workouts (name, program_id, order_index, archived_at)
-        select
-            'Lower A',
-            p.id,
-            2,
-            null
-        from
-            upper_lower_program p returning id
-    ),
-    upper_b as (
-        insert into
-            public.program_workouts (name, program_id, order_index, archived_at)
-        select
-            'Upper B',
-            p.id,
-            3,
-            null
-        from
-            upper_lower_program p returning id
-    ),
-    lower_b as (
-        insert into
-            public.program_workouts (name, program_id, order_index, archived_at)
-        select
-            'Lower B',
-            p.id,
-            4,
-            null
-        from
-            upper_lower_program p returning id
-    ),
-    ex_squat as (
-        select
-            id,
+            inserted_programs ip
+            join (
+                values
+                    ('Full Body 3 Day', 'Full Body A', 1),
+                    ('Full Body 3 Day', 'Full Body B', 2),
+                    ('Full Body 3 Day', 'Full Body C', 3),
+                    ('Upper / Lower 4 Day', 'Upper A', 1),
+                    ('Upper / Lower 4 Day', 'Lower A', 2),
+                    ('Upper / Lower 4 Day', 'Upper B', 3),
+                    ('Upper / Lower 4 Day', 'Lower B', 4)
+            ) as w (program_name, workout_name, order_index) on w.program_name = ip.name returning id,
+            program_id,
             name
-        from
-            public.exercises
-        where
-            name = 'Barbell Back Squat'
-        limit
-            1
     ),
-    ex_front_squat as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Front Squat'
-        limit
-            1
-    ),
-    ex_leg_press as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Leg Press'
-        limit
-            1
-    ),
-    ex_rdl as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Romanian Deadlift'
-        limit
-            1
-    ),
-    ex_deadlift as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Conventional Deadlift'
-        limit
-            1
-    ),
-    ex_bench as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Flat Barbell Bench Press'
-        limit
-            1
-    ),
-    ex_incline_db as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Incline Dumbbell Press'
-        limit
-            1
-    ),
-    ex_db_bench as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Flat Dumbbell Press'
-        limit
-            1
-    ),
-    ex_ohp as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Overhead Press'
-        limit
-            1
-    ),
-    ex_db_shoulder as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Seated Dumbbell Shoulder Press'
-        limit
-            1
-    ),
-    ex_row as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Barbell Row'
-        limit
-            1
-    ),
-    ex_cable_row as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Seated Cable Row'
-        limit
-            1
-    ),
-    ex_pulldown as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Lat Pulldown'
-        limit
-            1
-    ),
-    ex_pullup as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Pull-Up'
-        limit
-            1
-    ),
-    ex_bss as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Bulgarian Split Squat'
-        limit
-            1
-    ),
-    ex_leg_extension as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Leg Extension'
-        limit
-            1
-    ),
-    ex_leg_curl as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Seated Leg Curl'
-        limit
-            1
-    ),
-    ex_calf as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Standing Calf Raise'
-        limit
-            1
-    ),
-    ex_lateral_raise as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Lateral Raise'
-        limit
-            1
-    ),
-    ex_rear_delt as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Rear Delt Fly'
-        limit
-            1
-    ),
-    ex_face_pull as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Face Pull'
-        limit
-            1
-    ),
-    ex_curl as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Barbell Curl'
-        limit
-            1
-    ),
-    ex_hammer_curl as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Hammer Curl'
-        limit
-            1
-    ),
-    ex_pushdown as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Triceps Pushdown'
-        limit
-            1
-    ),
-    ex_skull as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Skull Crusher'
-        limit
-            1
-    ),
-    ex_plank as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Plank'
-        limit
-            1
-    ),
-    ex_hanging_leg_raise as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Hanging Leg Raise'
-        limit
-            1
-    ),
-    ex_cable_crunch as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Cable Crunch'
-        limit
-            1
-    ),
-    ex_goblet_squat as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Goblet Squat'
-        limit
-            1
-    ),
-    ex_chest_supported_row as (
-        select
-            id,
-            name
-        from
-            public.exercises
-        where
-            name = 'Chest Supported Row'
-        limit
-            1
-    ),
-    full_body_a_plan as (
+    inserted_plans as (
         insert into
             public.program_workout_exercises (
                 workout_id,
@@ -454,551 +98,231 @@ with
                 rep_goal
             )
         select
-            w.id,
-            e.id,
-            1,
-            4,
-            6
+            iw.id,
+            el.id,
+            p.in_workout_index,
+            p.sets,
+            p.rep_goal
         from
-            full_body_a w,
-            ex_squat e
-        union all
-        select
-            w.id,
-            e.id,
-            2,
-            4,
-            6
-        from
-            full_body_a w,
-            ex_bench e
-        union all
-        select
-            w.id,
-            e.id,
-            3,
-            4,
-            8
-        from
-            full_body_a w,
-            ex_row e
-        union all
-        select
-            w.id,
-            e.id,
-            4,
-            3,
-            10
-        from
-            full_body_a w,
-            ex_lateral_raise e
-        union all
-        select
-            w.id,
-            e.id,
-            5,
-            3,
-            12
-        from
-            full_body_a w,
-            ex_cable_crunch e returning id,
+            inserted_workouts iw
+            join (
+                values
+                    ('Full Body A', 1, 'Barbell Back Squat', 3, 6),
+                    ('Full Body A', 2, 'Incline Dumbbell Press', 3, 8),
+                    ('Full Body A', 3, 'Pendlay Row', 3, 8),
+                    ('Full Body A', 4, 'Barbell Curl', 3, 8),
+                    ('Full Body B', 1, 'Stiff-Leg Deadlift', 3, 6),
+                    ('Full Body B', 2, 'Dips', 3, 8),
+                    (
+                        'Full Body B',
+                        3,
+                        'Neutral Grip Lat Pulldown',
+                        3,
+                        8
+                    ),
+                    ('Full Body B', 4, 'Lateral Raise', 3, 10),
+                    ('Full Body C', 1, 'Bulgarian Split Squat', 3, 8),
+                    ('Full Body C', 2, 'Overhead Press', 3, 6),
+                    ('Full Body C', 3, 'Pull-Up', 3, 6),
+                    ('Full Body C', 4, 'Skull Crusher', 3, 8),
+                    ('Upper A', 1, 'Flat Barbell Bench Press', 4, 6),
+                    ('Upper A', 2, 'Barbell Row', 4, 8),
+                    ('Upper A', 3, 'Overhead Press', 3, 8),
+                    ('Upper A', 4, 'Barbell Curl', 3, 12),
+                    ('Upper A', 5, 'Triceps Pushdown', 3, 12),
+                    ('Lower A', 1, 'Barbell Back Squat', 4, 6),
+                    ('Lower A', 2, 'Romanian Deadlift', 4, 8),
+                    ('Lower A', 3, 'Leg Extension', 3, 12),
+                    ('Lower A', 4, 'Standing Calf Raise', 4, 12),
+                    ('Upper B', 1, 'Incline Dumbbell Press', 4, 8),
+                    ('Upper B', 2, 'Lat Pulldown', 4, 10),
+                    (
+                        'Upper B',
+                        3,
+                        'Seated Dumbbell Shoulder Press',
+                        3,
+                        10
+                    ),
+                    ('Upper B', 4, 'Rear Delt Fly', 3, 15),
+                    ('Upper B', 5, 'Skull Crusher', 3, 12),
+                    ('Lower B', 1, 'Front Squat', 4, 8),
+                    ('Lower B', 2, 'Leg Press', 4, 10),
+                    ('Lower B', 3, 'Seated Leg Curl', 3, 12),
+                    ('Lower B', 4, 'Standing Calf Raise', 4, 15)
+            ) as p (
+                workout_name,
+                in_workout_index,
+                exercise_name,
+                sets,
+                rep_goal
+            ) on p.workout_name = iw.name
+            join exercise_lookup el on el.name = p.exercise_name returning id,
             workout_id,
             exercise_id,
             in_workout_index
     ),
-    full_body_b_plan as (
+    full_body_weeks as (
+        select
+            gs as week_idx,
+            cast(
+                date_trunc ('week', current_date - interval '5 months') + (gs * 7) * interval '1 day' as date
+            ) as week_start
+        from
+            generate_series (0, 21) as gs
+    ),
+    full_body_session_source as (
+        select
+            case day_slot
+                when 1 then 'Full Body A'
+                when 2 then 'Full Body B'
+                when 3 then 'Full Body C'
+            end as workout_name,
+            cast(
+                fw.week_start + case
+                    when mod(fw.week_idx, 2) = 0 then case day_slot
+                        when 1 then 0
+                        when 2 then 2
+                        when 3 then 4
+                    end
+                    else case day_slot
+                        when 1 then 1
+                        when 2 then 3
+                        when 3 then 5
+                    end
+                end as date
+            ) as session_date
+        from
+            full_body_weeks fw
+            cross join generate_series (1, 3) as day_slot
+    ),
+    inserted_full_body_sessions as (
         insert into
-            public.program_workout_exercises (
+            public.workout_sessions (
                 workout_id,
-                exercise_id,
-                in_workout_index,
-                sets,
-                rep_goal
+                profile_id,
+                created_at,
+                started_at,
+                ended_at
             )
         select
-            w.id,
-            e.id,
-            1,
-            4,
-            8
+            iw.id,
+            tp.id,
+            cast(fbss.session_date as timestamp) + interval '17 hours 45 minutes',
+            cast(fbss.session_date as timestamp) + interval '18 hours',
+            cast(fbss.session_date as timestamp) + interval '18 hours' + case fbss.workout_name
+                when 'Full Body A' then interval '1 hour 18 minutes'
+                when 'Full Body B' then interval '1 hour 14 minutes'
+                else interval '1 hour 11 minutes'
+            end
         from
-            full_body_b w,
-            ex_rdl e
-        union all
-        select
-            w.id,
-            e.id,
-            2,
-            4,
-            8
-        from
-            full_body_b w,
-            ex_incline_db e
-        union all
-        select
-            w.id,
-            e.id,
-            3,
-            4,
-            10
-        from
-            full_body_b w,
-            ex_pulldown e
-        union all
-        select
-            w.id,
-            e.id,
-            4,
-            3,
-            12
-        from
-            full_body_b w,
-            ex_bss e
-        union all
-        select
-            w.id,
-            e.id,
-            5,
-            3,
-            12
-        from
-            full_body_b w,
-            ex_pushdown e returning id,
+            full_body_session_source fbss
+            join inserted_workouts iw on iw.name = fbss.workout_name
+            cross join target_profile tp returning id,
             workout_id,
-            exercise_id,
-            in_workout_index
+            started_at,
+            ended_at
     ),
-    full_body_c_plan as (
+    full_body_sessions as (
+        select
+            ifbs.id,
+            iw.name as workout_name,
+            ifbs.started_at,
+            ifbs.ended_at,
+            row_number() over (
+                partition by
+                    iw.name
+                order by
+                    ifbs.started_at
+            ) as workout_occurrence
+        from
+            inserted_full_body_sessions ifbs
+            join inserted_workouts iw on iw.id = ifbs.workout_id
+    ),
+    upper_lower_weeks as (
+        select
+            gs as week_idx,
+            cast(
+                date_trunc ('week', current_date - interval '8 weeks') + (gs * 7) * interval '1 day' as date
+            ) as week_start
+        from
+            generate_series (0, 2) as gs
+    ),
+    upper_lower_session_source as (
+        select
+            ul.workout_name,
+            cast(ulw.week_start + ul.day_offset as date) as session_date
+        from
+            upper_lower_weeks ulw
+            join (
+                values
+                    ('Upper A', 0),
+                    ('Lower A', 1),
+                    ('Upper B', 3),
+                    ('Lower B', 5)
+            ) as ul (workout_name, day_offset) on true
+    ),
+    inserted_upper_lower_sessions as (
         insert into
-            public.program_workout_exercises (
+            public.workout_sessions (
                 workout_id,
-                exercise_id,
-                in_workout_index,
-                sets,
-                rep_goal
+                profile_id,
+                created_at,
+                started_at,
+                ended_at
             )
         select
-            w.id,
-            e.id,
-            1,
-            3,
-            5
+            iw.id,
+            tp.id,
+            cast(ulss.session_date as timestamp) + interval '17 hours 45 minutes',
+            cast(ulss.session_date as timestamp) + interval '18 hours',
+            cast(ulss.session_date as timestamp) + interval '18 hours' + case
+                when ulss.workout_name like 'Upper%' then interval '1 hour 12 minutes'
+                else interval '1 hour 16 minutes'
+            end
         from
-            full_body_c w,
-            ex_deadlift e
-        union all
-        select
-            w.id,
-            e.id,
-            2,
-            4,
-            6
-        from
-            full_body_c w,
-            ex_ohp e
-        union all
-        select
-            w.id,
-            e.id,
-            3,
-            4,
-            8
-        from
-            full_body_c w,
-            ex_pullup e
-        union all
-        select
-            w.id,
-            e.id,
-            4,
-            3,
-            12
-        from
-            full_body_c w,
-            ex_leg_curl e
-        union all
-        select
-            w.id,
-            e.id,
-            5,
-            3,
-            10
-        from
-            full_body_c w,
-            ex_hanging_leg_raise e returning id,
+            upper_lower_session_source ulss
+            join inserted_workouts iw on iw.name = ulss.workout_name
+            cross join target_profile tp returning id,
             workout_id,
-            exercise_id,
-            in_workout_index
+            started_at,
+            ended_at
     ),
-    upper_a_plan as (
-        insert into
-            public.program_workout_exercises (
-                workout_id,
-                exercise_id,
-                in_workout_index,
-                sets,
-                rep_goal
-            )
+    upper_lower_sessions as (
         select
-            w.id,
-            e.id,
-            1,
-            4,
-            6
+            iuls.id,
+            iw.name as workout_name,
+            iuls.started_at,
+            iuls.ended_at,
+            row_number() over (
+                partition by
+                    iw.name
+                order by
+                    iuls.started_at
+            ) as workout_occurrence
         from
-            upper_a w,
-            ex_bench e
-        union all
-        select
-            w.id,
-            e.id,
-            2,
-            4,
-            8
-        from
-            upper_a w,
-            ex_row e
-        union all
-        select
-            w.id,
-            e.id,
-            3,
-            3,
-            8
-        from
-            upper_a w,
-            ex_ohp e
-        union all
-        select
-            w.id,
-            e.id,
-            4,
-            3,
-            12
-        from
-            upper_a w,
-            ex_curl e
-        union all
-        select
-            w.id,
-            e.id,
-            5,
-            3,
-            12
-        from
-            upper_a w,
-            ex_pushdown e returning id
+            inserted_upper_lower_sessions iuls
+            join inserted_workouts iw on iw.id = iuls.workout_id
     ),
-    lower_a_plan as (
-        insert into
-            public.program_workout_exercises (
-                workout_id,
-                exercise_id,
-                in_workout_index,
-                sets,
-                rep_goal
-            )
+    all_sessions as (
         select
-            w.id,
-            e.id,
-            1,
-            4,
-            6
+            id,
+            workout_name,
+            started_at,
+            ended_at,
+            workout_occurrence
         from
-            lower_a w,
-            ex_squat e
+            full_body_sessions
         union all
         select
-            w.id,
-            e.id,
-            2,
-            4,
-            8
+            id,
+            workout_name,
+            started_at,
+            ended_at,
+            workout_occurrence
         from
-            lower_a w,
-            ex_rdl e
-        union all
-        select
-            w.id,
-            e.id,
-            3,
-            3,
-            12
-        from
-            lower_a w,
-            ex_leg_extension e
-        union all
-        select
-            w.id,
-            e.id,
-            4,
-            4,
-            12
-        from
-            lower_a w,
-            ex_calf e returning id
+            upper_lower_sessions
     ),
-    upper_b_plan as (
-        insert into
-            public.program_workout_exercises (
-                workout_id,
-                exercise_id,
-                in_workout_index,
-                sets,
-                rep_goal
-            )
-        select
-            w.id,
-            e.id,
-            1,
-            4,
-            8
-        from
-            upper_b w,
-            ex_incline_db e
-        union all
-        select
-            w.id,
-            e.id,
-            2,
-            4,
-            10
-        from
-            upper_b w,
-            ex_pulldown e
-        union all
-        select
-            w.id,
-            e.id,
-            3,
-            3,
-            10
-        from
-            upper_b w,
-            ex_db_shoulder e
-        union all
-        select
-            w.id,
-            e.id,
-            4,
-            3,
-            15
-        from
-            upper_b w,
-            ex_rear_delt e
-        union all
-        select
-            w.id,
-            e.id,
-            5,
-            3,
-            12
-        from
-            upper_b w,
-            ex_skull e returning id
-    ),
-    lower_b_plan as (
-        insert into
-            public.program_workout_exercises (
-                workout_id,
-                exercise_id,
-                in_workout_index,
-                sets,
-                rep_goal
-            )
-        select
-            w.id,
-            e.id,
-            1,
-            4,
-            8
-        from
-            lower_b w,
-            ex_front_squat e
-        union all
-        select
-            w.id,
-            e.id,
-            2,
-            4,
-            10
-        from
-            lower_b w,
-            ex_leg_press e
-        union all
-        select
-            w.id,
-            e.id,
-            3,
-            3,
-            12
-        from
-            lower_b w,
-            ex_leg_curl e
-        union all
-        select
-            w.id,
-            e.id,
-            4,
-            4,
-            15
-        from
-            lower_b w,
-            ex_calf e returning id
-    ),
-    session_fb_a_1 as (
-        insert into
-            public.workout_sessions (
-                workout_id,
-                profile_id,
-                created_at,
-                started_at,
-                ended_at
-            )
-        select
-            w.id,
-            tp.id,
-            now () - interval '20 days',
-            now () - interval '20 days' + interval '18 hours',
-            now () - interval '20 days' + interval '19 hours 5 minutes'
-        from
-            full_body_a w,
-            target_profile tp returning id
-    ),
-    session_fb_b_1 as (
-        insert into
-            public.workout_sessions (
-                workout_id,
-                profile_id,
-                created_at,
-                started_at,
-                ended_at
-            )
-        select
-            w.id,
-            tp.id,
-            now () - interval '18 days',
-            now () - interval '18 days' + interval '18 hours 10 minutes',
-            now () - interval '18 days' + interval '19 hours 12 minutes'
-        from
-            full_body_b w,
-            target_profile tp returning id
-    ),
-    session_fb_c_1 as (
-        insert into
-            public.workout_sessions (
-                workout_id,
-                profile_id,
-                created_at,
-                started_at,
-                ended_at
-            )
-        select
-            w.id,
-            tp.id,
-            now () - interval '16 days',
-            now () - interval '16 days' + interval '17 hours 45 minutes',
-            now () - interval '16 days' + interval '18 hours 40 minutes'
-        from
-            full_body_c w,
-            target_profile tp returning id
-    ),
-    session_fb_a_2 as (
-        insert into
-            public.workout_sessions (
-                workout_id,
-                profile_id,
-                created_at,
-                started_at,
-                ended_at
-            )
-        select
-            w.id,
-            tp.id,
-            now () - interval '13 days',
-            now () - interval '13 days' + interval '18 hours',
-            now () - interval '13 days' + interval '19 hours 3 minutes'
-        from
-            full_body_a w,
-            target_profile tp returning id
-    ),
-    session_fb_b_2 as (
-        insert into
-            public.workout_sessions (
-                workout_id,
-                profile_id,
-                created_at,
-                started_at,
-                ended_at
-            )
-        select
-            w.id,
-            tp.id,
-            now () - interval '11 days',
-            now () - interval '11 days' + interval '18 hours 5 minutes',
-            now () - interval '11 days' + interval '19 hours 9 minutes'
-        from
-            full_body_b w,
-            target_profile tp returning id
-    ),
-    session_fb_c_2 as (
-        insert into
-            public.workout_sessions (
-                workout_id,
-                profile_id,
-                created_at,
-                started_at,
-                ended_at
-            )
-        select
-            w.id,
-            tp.id,
-            now () - interval '9 days',
-            now () - interval '9 days' + interval '17 hours 40 minutes',
-            now () - interval '9 days' + interval '18 hours 32 minutes'
-        from
-            full_body_c w,
-            target_profile tp returning id
-    ),
-    session_fb_a_3 as (
-        insert into
-            public.workout_sessions (
-                workout_id,
-                profile_id,
-                created_at,
-                started_at,
-                ended_at
-            )
-        select
-            w.id,
-            tp.id,
-            now () - interval '6 days',
-            now () - interval '6 days' + interval '18 hours 15 minutes',
-            now () - interval '6 days' + interval '19 hours 18 minutes'
-        from
-            full_body_a w,
-            target_profile tp returning id
-    ),
-    session_fb_b_3 as (
-        insert into
-            public.workout_sessions (
-                workout_id,
-                profile_id,
-                created_at,
-                started_at,
-                ended_at
-            )
-        select
-            w.id,
-            tp.id,
-            now () - interval '4 days',
-            now () - interval '4 days' + interval '18 hours',
-            now () - interval '4 days' + interval '19 hours 4 minutes'
-        from
-            full_body_b w,
-            target_profile tp returning id
-    ),
-    fb_a_1_exercises as (
+    inserted_session_exercises as (
         insert into
             public.session_exercises (
                 session_id,
@@ -1009,525 +333,307 @@ with
             )
         select
             s.id,
-            e.id,
+            p.exercise_id,
             e.name,
-            1,
-            null::uuid
+            p.in_workout_index,
+            cast(null as uuid)
         from
-            session_fb_a_1 s,
-            ex_squat e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            2,
-            null::uuid
-        from
-            session_fb_a_1 s,
-            ex_bench e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            3,
-            null::uuid
-        from
-            session_fb_a_1 s,
-            ex_row e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            4,
-            null::uuid
-        from
-            session_fb_a_1 s,
-            ex_lateral_raise e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            5,
-            null::uuid
-        from
-            session_fb_a_1 s,
-            ex_cable_crunch e returning id,
-            in_session_index
+            all_sessions s
+            join inserted_workouts iw on iw.name = s.workout_name
+            join inserted_plans p on p.workout_id = iw.id
+            join public.exercises e on e.id = p.exercise_id returning id,
+            session_id,
+            exercise_name
     ),
-    fb_b_1_exercises as (
-        insert into
-            public.session_exercises (
-                session_id,
-                exercise_id,
+    session_exercise_context as (
+        select
+            ise.id as session_exercise_id,
+            s.workout_name,
+            s.workout_occurrence,
+            s.ended_at,
+            ise.exercise_name
+        from
+            inserted_session_exercises ise
+            join all_sessions s on s.id = ise.session_id
+    ),
+    progression_map as (
+        select
+            workout_name,
+            exercise_name,
+            cast(start_weight as numeric(10, 2)) as start_weight,
+            start_reps,
+            start_rir,
+            cast(end_weight as numeric(10, 2)) as end_weight,
+            end_reps,
+            end_rir,
+            total_occurrences
+        from
+            (
+                values
+                    (
+                        'Full Body A',
+                        'Barbell Back Squat',
+                        120.0,
+                        5,
+                        2,
+                        150.0,
+                        6,
+                        1,
+                        22
+                    ),
+                    (
+                        'Full Body A',
+                        'Incline Dumbbell Press',
+                        37.5,
+                        5,
+                        1,
+                        45.0,
+                        7,
+                        2,
+                        22
+                    ),
+                    (
+                        'Full Body A',
+                        'Pendlay Row',
+                        85.0,
+                        6,
+                        2,
+                        95.0,
+                        6,
+                        2,
+                        22
+                    ),
+                    (
+                        'Full Body A',
+                        'Barbell Curl',
+                        30.0,
+                        7,
+                        2,
+                        35.0,
+                        7,
+                        2,
+                        22
+                    ),
+                    (
+                        'Full Body B',
+                        'Stiff-Leg Deadlift',
+                        140.0,
+                        4,
+                        2,
+                        165.0,
+                        5,
+                        1,
+                        22
+                    ),
+                    ('Full Body B', 'Dips', 27.5, 5, 2, 35.0, 8, 1, 22),
+                    (
+                        'Full Body B',
+                        'Neutral Grip Lat Pulldown',
+                        85.0,
+                        7,
+                        2,
+                        95.0,
+                        8,
+                        2,
+                        22
+                    ),
+                    (
+                        'Full Body B',
+                        'Lateral Raise',
+                        10.0,
+                        10,
+                        1,
+                        15.0,
+                        12,
+                        1,
+                        22
+                    ),
+                    (
+                        'Full Body C',
+                        'Bulgarian Split Squat',
+                        45.0,
+                        7,
+                        2,
+                        57.5,
+                        7,
+                        2,
+                        22
+                    ),
+                    (
+                        'Full Body C',
+                        'Overhead Press',
+                        57.5,
+                        6,
+                        2,
+                        67.5,
+                        7,
+                        1,
+                        22
+                    ),
+                    (
+                        'Full Body C',
+                        'Pull-Up',
+                        27.5,
+                        7,
+                        2,
+                        40.0,
+                        6,
+                        1,
+                        22
+                    ),
+                    (
+                        'Full Body C',
+                        'Skull Crusher',
+                        25.0,
+                        7,
+                        1,
+                        35.0,
+                        8,
+                        1,
+                        22
+                    )
+            ) as pm (
+                workout_name,
                 exercise_name,
-                in_session_index,
-                planned_exercise_id
+                start_weight,
+                start_reps,
+                start_rir,
+                end_weight,
+                end_reps,
+                end_rir,
+                total_occurrences
             )
-        select
-            s.id,
-            e.id,
-            e.name,
-            1,
-            null::uuid
-        from
-            session_fb_b_1 s,
-            ex_rdl e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            2,
-            null::uuid
-        from
-            session_fb_b_1 s,
-            ex_incline_db e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            3,
-            null::uuid
-        from
-            session_fb_b_1 s,
-            ex_pulldown e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            4,
-            null::uuid
-        from
-            session_fb_b_1 s,
-            ex_bss e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            5,
-            null::uuid
-        from
-            session_fb_b_1 s,
-            ex_pushdown e returning id,
-            in_session_index
     ),
-    fb_c_1_exercises as (
-        insert into
-            public.session_exercises (
-                session_id,
-                exercise_id,
+    upper_lower_base_map as (
+        select
+            workout_name,
+            exercise_name,
+            cast(base_weight as numeric(10, 2)) as base_weight,
+            base_reps,
+            base_rir
+        from
+            (
+                values
+                    ('Upper A', 'Flat Barbell Bench Press', 80.0, 6, 2),
+                    ('Upper A', 'Barbell Row', 75.0, 8, 2),
+                    ('Upper A', 'Overhead Press', 50.0, 8, 2),
+                    ('Upper A', 'Barbell Curl', 27.5, 10, 2),
+                    ('Upper A', 'Triceps Pushdown', 40.0, 12, 2),
+                    ('Lower A', 'Barbell Back Squat', 110.0, 6, 2),
+                    ('Lower A', 'Romanian Deadlift', 120.0, 8, 2),
+                    ('Lower A', 'Leg Extension', 60.0, 12, 1),
+                    ('Lower A', 'Standing Calf Raise', 70.0, 12, 1),
+                    ('Upper B', 'Incline Dumbbell Press', 32.5, 8, 2),
+                    ('Upper B', 'Lat Pulldown', 75.0, 10, 2),
+                    (
+                        'Upper B',
+                        'Seated Dumbbell Shoulder Press',
+                        25.0,
+                        10,
+                        2
+                    ),
+                    ('Upper B', 'Rear Delt Fly', 35.0, 15, 1),
+                    ('Upper B', 'Skull Crusher', 22.5, 12, 1),
+                    ('Lower B', 'Front Squat', 90.0, 8, 2),
+                    ('Lower B', 'Leg Press', 180.0, 10, 2),
+                    ('Lower B', 'Seated Leg Curl', 50.0, 12, 1),
+                    ('Lower B', 'Standing Calf Raise', 75.0, 15, 1)
+            ) as ul (
+                workout_name,
                 exercise_name,
-                in_session_index,
-                planned_exercise_id
+                base_weight,
+                base_reps,
+                base_rir
             )
-        select
-            s.id,
-            e.id,
-            e.name,
-            1,
-            null::uuid
-        from
-            session_fb_c_1 s,
-            ex_deadlift e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            2,
-            null::uuid
-        from
-            session_fb_c_1 s,
-            ex_ohp e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            3,
-            null::uuid
-        from
-            session_fb_c_1 s,
-            ex_pullup e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            4,
-            null::uuid
-        from
-            session_fb_c_1 s,
-            ex_leg_curl e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            5,
-            null::uuid
-        from
-            session_fb_c_1 s,
-            ex_hanging_leg_raise e returning id,
-            in_session_index
     ),
-    fb_a_2_exercises as (
-        insert into
-            public.session_exercises (
-                session_id,
-                exercise_id,
-                exercise_name,
-                in_session_index,
-                planned_exercise_id
-            )
+    full_body_sets as (
         select
-            s.id,
-            e.id,
-            e.name,
-            1,
-            null::uuid
+            sec.session_exercise_id,
+            gs.set_index,
+            'completed' as status,
+            cast(
+                round(
+                    (
+                        (
+                            pm.start_weight + (
+                                (pm.end_weight - pm.start_weight) * cast(sec.workout_occurrence - 1 as numeric) / cast(pm.total_occurrences - 1 as numeric)
+                            )
+                        ) / 2.5
+                    )
+                ) * 2.5 - ((gs.set_index - 1) * 2.5) as numeric(10, 2)
+            ) as weight,
+            greatest (
+                1,
+                cast(
+                    round(
+                        pm.start_reps + (
+                            (pm.end_reps - pm.start_reps) * cast(sec.workout_occurrence - 1 as numeric) / cast(pm.total_occurrences - 1 as numeric)
+                        )
+                    ) as integer
+                ) + (gs.set_index - 1)
+            ) as reps,
+            greatest (
+                0,
+                cast(
+                    round(
+                        pm.start_rir + (
+                            (pm.end_rir - pm.start_rir) * cast(sec.workout_occurrence - 1 as numeric) / cast(pm.total_occurrences - 1 as numeric)
+                        )
+                    ) as integer
+                )
+            ) as rir,
+            sec.ended_at - ((4 - gs.set_index) * interval '2 minutes') as created_at
         from
-            session_fb_a_2 s,
-            ex_squat e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            2,
-            null::uuid
-        from
-            session_fb_a_2 s,
-            ex_db_bench e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            3,
-            p.id
-        from
-            session_fb_a_2 s
-            cross join ex_chest_supported_row e
-            join full_body_a_plan p on p.in_workout_index = 3
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            4,
-            null::uuid
-        from
-            session_fb_a_2 s,
-            ex_lateral_raise e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            5,
-            null::uuid
-        from
-            session_fb_a_2 s,
-            ex_cable_crunch e returning id,
-            in_session_index
+            session_exercise_context sec
+            join progression_map pm on pm.workout_name = sec.workout_name
+            and pm.exercise_name = sec.exercise_name
+            cross join generate_series (1, 3) as gs (set_index)
+        where
+            sec.workout_name in ('Full Body A', 'Full Body B', 'Full Body C')
     ),
-    fb_b_2_exercises as (
-        insert into
-            public.session_exercises (
-                session_id,
-                exercise_id,
-                exercise_name,
-                in_session_index,
-                planned_exercise_id
-            )
+    upper_lower_sets as (
         select
-            s.id,
-            e.id,
-            e.name,
-            1,
-            null::uuid
+            sec.session_exercise_id,
+            gs.set_index,
+            'completed' as status,
+            cast(
+                ul.base_weight + ((sec.workout_occurrence - 1) * 2.5) - ((gs.set_index - 1) * 2.5) as numeric(10, 2)
+            ) as weight,
+            cast(
+                ul.base_reps + least (sec.workout_occurrence - 1, 2) + (gs.set_index - 1) as integer
+            ) as reps,
+            cast(ul.base_rir as integer) as rir,
+            sec.ended_at - ((5 - gs.set_index) * interval '2 minutes') as created_at
         from
-            session_fb_b_2 s,
-            ex_rdl e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            2,
-            null::uuid
-        from
-            session_fb_b_2 s,
-            ex_incline_db e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            3,
-            null::uuid
-        from
-            session_fb_b_2 s,
-            ex_pulldown e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            4,
-            null::uuid
-        from
-            session_fb_b_2 s,
-            ex_bss e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            5,
-            null::uuid
-        from
-            session_fb_b_2 s,
-            ex_pushdown e returning id,
-            in_session_index
+            session_exercise_context sec
+            join upper_lower_base_map ul on ul.workout_name = sec.workout_name
+            and ul.exercise_name = sec.exercise_name
+            cross join generate_series (1, 3) as gs (set_index)
+        where
+            sec.workout_name in ('Upper A', 'Lower A', 'Upper B', 'Lower B')
     ),
-    fb_c_2_exercises as (
-        insert into
-            public.session_exercises (
-                session_id,
-                exercise_id,
-                exercise_name,
-                in_session_index,
-                planned_exercise_id
-            )
+    all_sets as (
         select
-            s.id,
-            e.id,
-            e.name,
-            1,
-            null::uuid
+            session_exercise_id,
+            set_index,
+            status,
+            weight,
+            reps,
+            rir,
+            created_at
         from
-            session_fb_c_2 s,
-            ex_deadlift e
+            full_body_sets
         union all
         select
-            s.id,
-            e.id,
-            e.name,
-            2,
-            null::uuid
+            session_exercise_id,
+            set_index,
+            status,
+            weight,
+            reps,
+            rir,
+            created_at
         from
-            session_fb_c_2 s,
-            ex_db_shoulder e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            3,
-            null::uuid
-        from
-            session_fb_c_2 s,
-            ex_pullup e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            4,
-            null::uuid
-        from
-            session_fb_c_2 s,
-            ex_leg_curl e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            5,
-            null::uuid
-        from
-            session_fb_c_2 s,
-            ex_hanging_leg_raise e returning id,
-            in_session_index
-    ),
-    fb_a_3_exercises as (
-        insert into
-            public.session_exercises (
-                session_id,
-                exercise_id,
-                exercise_name,
-                in_session_index,
-                planned_exercise_id
-            )
-        select
-            s.id,
-            e.id,
-            e.name,
-            1,
-            null::uuid
-        from
-            session_fb_a_3 s,
-            ex_squat e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            2,
-            null::uuid
-        from
-            session_fb_a_3 s,
-            ex_bench e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            3,
-            null::uuid
-        from
-            session_fb_a_3 s,
-            ex_row e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            4,
-            null::uuid
-        from
-            session_fb_a_3 s,
-            ex_lateral_raise e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            5,
-            null::uuid
-        from
-            session_fb_a_3 s,
-            ex_cable_crunch e returning id,
-            in_session_index
-    ),
-    fb_b_3_exercises as (
-        insert into
-            public.session_exercises (
-                session_id,
-                exercise_id,
-                exercise_name,
-                in_session_index,
-                planned_exercise_id
-            )
-        select
-            s.id,
-            e.id,
-            e.name,
-            1,
-            p.id
-        from
-            session_fb_b_3 s
-            cross join ex_goblet_squat e
-            join full_body_b_plan p on p.in_workout_index = 1
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            2,
-            null::uuid
-        from
-            session_fb_b_3 s,
-            ex_incline_db e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            3,
-            null::uuid
-        from
-            session_fb_b_3 s,
-            ex_pulldown e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            4,
-            null::uuid
-        from
-            session_fb_b_3 s,
-            ex_bss e
-        union all
-        select
-            s.id,
-            e.id,
-            e.name,
-            5,
-            null::uuid
-        from
-            session_fb_b_3 s,
-            ex_pushdown e returning id,
-            in_session_index
-    ),
-    all_session_exercises as (
-        select
-            id,
-            in_session_index
-        from
-            fb_a_1_exercises
-        union all
-        select
-            id,
-            in_session_index
-        from
-            fb_b_1_exercises
-        union all
-        select
-            id,
-            in_session_index
-        from
-            fb_c_1_exercises
-        union all
-        select
-            id,
-            in_session_index
-        from
-            fb_a_2_exercises
-        union all
-        select
-            id,
-            in_session_index
-        from
-            fb_b_2_exercises
-        union all
-        select
-            id,
-            in_session_index
-        from
-            fb_c_2_exercises
-        union all
-        select
-            id,
-            in_session_index
-        from
-            fb_a_3_exercises
-        union all
-        select
-            id,
-            in_session_index
-        from
-            fb_b_3_exercises
+            upper_lower_sets
     )
 insert into
     public.sets (
@@ -1540,31 +646,14 @@ insert into
         created_at
     )
 select
-    ase.id,
-    set_data.set_index,
-    'completed',
-    case
-        when ase.in_session_index = 1 then
-            set_data.weight_base + 40
-        when ase.in_session_index = 2 then
-            set_data.weight_base + 15
-        when ase.in_session_index = 3 then
-            set_data.weight_base + 20
-        when ase.in_session_index = 4 then
-            set_data.weight_base
-        else
-            set_data.weight_base - 5
-    end,
-    set_data.reps,
-    set_data.rir,
-    now () - interval '2 days'
+    session_exercise_id,
+    set_index,
+    status,
+    weight,
+    reps,
+    rir,
+    created_at
 from
-    all_session_exercises ase
-    cross join (
-        values
-            (1, 20::numeric, 10, 3),
-            (2, 25::numeric, 8, 2),
-            (3, 30::numeric, 6, 1)
-    ) as set_data (set_index, weight_base, reps, rir);
+    all_sets;
 
 commit;

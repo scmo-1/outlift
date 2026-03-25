@@ -10,11 +10,11 @@ export async function getActiveProgram(profileId: string): Promise<ProgramRow | 
     .select('*')
     .eq('profile_id', profileId)
     .is('is_active', true)
-    .single()
+    .limit(1)
 
   if (error) throw error
 
-  return data ?? null
+  return data?.[0] ?? null
 }
 
 export async function listAllInactivePrograms(profileId: string): Promise<ProgramRow[]> {
@@ -52,11 +52,11 @@ export async function getActiveProgramWithDetails(
     )
     .eq('profile_id', profileId)
     .is('is_active', true)
-    .single()
+    .limit(1)
 
   if (error) throw error
 
-  return data ?? null
+  return data?.[0] ?? null
 }
 
 export async function createProgram(profileId: string, programDraft: ProgramDraft): Promise<ProgramRow> {

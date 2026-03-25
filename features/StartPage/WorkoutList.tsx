@@ -4,14 +4,14 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowLeftRight } from 'lucide-react'
 
 type WorkoutListProps = {
-  exercises: WorkoutDetailsExercise[]
+  exercises?: WorkoutDetailsExercise[]
   previousLimit?: number
 }
 
 function WorkoutList({ exercises, previousLimit = 1 }: WorkoutListProps) {
   return (
     <ul className="flex flex-col gap-3">
-      {exercises.map((exercise) => {
+      {exercises?.map((exercise) => {
         const previousSessions = exercise.previous.slice(0, previousLimit)
 
         return (

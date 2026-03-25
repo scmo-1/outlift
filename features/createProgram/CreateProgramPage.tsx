@@ -212,7 +212,7 @@ function CreateProgramPage({ exercises, createProgramAction }: CreatePageProps) 
 
   return (
     <>
-      <div className="flex flex-col gap-3 w-full pb-10">
+      <div className="flex flex-col gap-3 w-full pb-30">
         <label>
           Program name
           <Input

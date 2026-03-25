@@ -10,7 +10,7 @@ type GetStartPageParams = {
 
 type StartPageData = {
   mode: 'default' | 'completed'
-  workout: WorkoutDetails
+  workout: WorkoutDetails | null
 }
 
 export async function getStartPageData({
@@ -38,7 +38,12 @@ export async function getStartPageData({
     }
   } else {
     const nextWorkout = await getNextWorkout(profileId)
-    if (!nextWorkout) throw new Error('Error fetching next workout')
+    if (!nextWorkout) {
+      return {
+        mode: 'default',
+        workout: null,
+      }
+    }
 
     const nextWorkoutDetails = await getWorkoutDetails(nextWorkout.id)
 

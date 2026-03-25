@@ -172,7 +172,7 @@
 }
 @layer utilities {
   .text-stroke {
-    -webkit-text-stroke: 2px #ffffff22;
+    -webkit-text-stroke: 2px #daebd481;
     color: transparent;
   }
 }

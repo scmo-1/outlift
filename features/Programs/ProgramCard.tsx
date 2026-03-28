@@ -24,11 +24,9 @@ function ProgramsCard({ name, id, activateProgramAction }: ProgramCardProps) {
               start program
             </Button>
           </form>
-          <Link href="/">
-            <Button className={buttonClass} variant="outline">
-              view details
-            </Button>
-          </Link>
+          <Button asChild className={buttonClass} variant="outline">
+            <Link href={`/overview?programId=${id}`}>view details</Link>
+          </Button>
         </div>
       </CardContent>
     </Card>

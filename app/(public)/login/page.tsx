@@ -9,6 +9,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 
+const authInputClassName =
+  'border-white/15 bg-white/10 placeholder:text-foreground/60 backdrop-blur-sm'
+
 function SubmitButton() {
   const { pending } = useFormStatus()
 
@@ -34,12 +37,14 @@ export default function LoginPage() {
           type="email"
           placeholder="Email"
           defaultValue={email}
+          className={authInputClassName}
           aria-invalid={error ? 'true' : 'false'}
         />
         <Input
           name="password"
           type="password"
           placeholder="Password"
+          className={authInputClassName}
           aria-invalid={error ? 'true' : 'false'}
         />
 

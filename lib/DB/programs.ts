@@ -59,6 +59,34 @@ export async function getActiveProgramWithDetails(
   return data?.[0] ?? null
 }
 
+export async function getProgramWithDetails(
+  profileId: string,
+  programId: string,
+): Promise<ProgramWithDetails | null> {
+  const supabase = await getSupabase()
+  const { data, error } = await supabase
+    .from('programs')
+    .select(
+      `
+  *,
+  workouts:program_workouts (
+    *,
+    plannedExercises:program_workout_exercises (
+      *,
+      exercise:exercises (*)
+    )
+  )
+`,
+    )
+    .eq('profile_id', profileId)
+    .eq('id', programId)
+    .limit(1)
+
+  if (error) throw error
+
+  return data?.[0] ?? null
+}
+
 export async function createProgram(profileId: string, programDraft: ProgramDraft): Promise<ProgramRow> {
   const supabase = await getSupabase()
   const programName = programDraft.name.trim()

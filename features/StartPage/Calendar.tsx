@@ -1,10 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import {
   DialogTrigger,
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -12,8 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import type { CalendarMonthData } from '@/types/Calendar'
 import CalendarGrid from './Components/CalendarGrid'
-
-// const endpoint = `/api/calendar?month=${}&year=${}`
+import Paginator from '../Paginator/Paginator'
 
 type CalendarProps = {
   initialData: CalendarMonthData
@@ -21,6 +19,39 @@ type CalendarProps = {
 
 function Calendar({ initialData }: CalendarProps) {
   const [calendarData, setCalendarData] = useState<CalendarMonthData>(initialData)
+  const [isPending, startTransition] = useTransition()
+
+  const currentDate = new Date()
+  const currentMonthIndex = currentDate.getFullYear() * 12 + currentDate.getMonth()
+  const displayedMonthIndex = calendarData.year * 12 + (calendarData.month - 1)
+
+  const loadMonth = (year: number, month: number) => {
+    startTransition(async () => {
+      const response = await fetch(`/api/calendar?month=${month}&year=${year}`)
+
+      if (!response.ok) {
+        return
+      }
+
+      const nextMonthData = (await response.json()) as CalendarMonthData
+      setCalendarData(nextMonthData)
+    })
+  }
+
+  const handlePreviousMonth = () => {
+    if (isPending) return
+
+    const previousMonth = new Date(calendarData.year, calendarData.month - 2, 1)
+    loadMonth(previousMonth.getFullYear(), previousMonth.getMonth() + 1)
+  }
+
+  const handleNextMonth = () => {
+    if (isPending || displayedMonthIndex >= currentMonthIndex) return
+
+    const nextMonth = new Date(calendarData.year, calendarData.month, 1)
+    loadMonth(nextMonth.getFullYear(), nextMonth.getMonth() + 1)
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -30,8 +61,20 @@ function Calendar({ initialData }: CalendarProps) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Calendar</DialogTitle>
-          <DialogClose />
+          <DialogTitle className="sr-only">Calendar</DialogTitle>
+          <Paginator
+            pages={1}
+            currentPage={0}
+            onPageChange={() => {}}
+            onNext={handleNextMonth}
+            onPrevious={handlePreviousMonth}
+            hidePageLinks
+            displayLabel={calendarData.monthLabel}
+            disableNext={isPending || displayedMonthIndex >= currentMonthIndex}
+            disablePrevious={isPending}
+            previousAriaLabel="Go to previous month"
+            nextAriaLabel="Go to next month"
+          />
         </DialogHeader>
         <CalendarGrid data={calendarData.days} />
       </DialogContent>

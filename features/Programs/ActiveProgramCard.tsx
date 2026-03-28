@@ -1,6 +1,7 @@
 import type { ProgramWithDetails } from '@/types/programs'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import Link from 'next/link'
 
 type Props = {
   program: ProgramWithDetails
@@ -20,8 +21,8 @@ function ActiveProgramCard({ program }: Props) {
               className="flex flex-col gap-2 rounded-xl border border-border bg-muted/40 p-3"
             >
               <span className="font-medium">{workout.name}</span>
-              <div className="rounded-lg bg-muted px-2 py-2 text-sm text-muted-foreground">
-                <p className="line-clamp-1 truncate">
+              <div className="rounded-lg bg-muted px-2 py-2 text-sm text-muted-foreground overflow-x-auto">
+                <p className=" w-full text-nowrap">
                   {workout.plannedExercises.map((ex) => ex.exercise.name).join(', ')}
                 </p>
               </div>
@@ -30,8 +31,8 @@ function ActiveProgramCard({ program }: Props) {
         </ul>
       </CardContent>
       <CardFooter className="px-3 pt-3">
-        <Button variant="outline" className="w-full uppercase">
-          view details
+        <Button asChild variant="outline" className="w-full uppercase">
+          <Link href={`/overview?programId=${program.id}`}>view details</Link>
         </Button>
       </CardFooter>
     </Card>

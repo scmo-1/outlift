@@ -10,10 +10,7 @@ type WorkoutListProps = {
 }
 
 function WorkoutList({ exercises, mode, previousLimit = 1 }: WorkoutListProps) {
-  const historyLabel =
-    mode === 'completed'
-      ? 'This is what you completed in this session'
-      : 'Previous'
+  const historyLabel = mode === 'completed' ? 'This Session' : 'Previous'
 
   return (
     <ul className="flex flex-col gap-4">

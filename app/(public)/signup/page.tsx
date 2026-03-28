@@ -9,6 +9,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 
+const authInputClassName =
+  'border-white/15 bg-white/10 placeholder:text-foreground/60 backdrop-blur-sm'
+
 function SubmitButton() {
   const { pending } = useFormStatus()
 
@@ -37,6 +40,7 @@ export default function SignUpPage() {
             type="text"
             placeholder="Username"
             defaultValue={username}
+            className={authInputClassName}
             aria-invalid={fieldErrors.username ? 'true' : 'false'}
           />
           {fieldErrors.username && (
@@ -50,6 +54,7 @@ export default function SignUpPage() {
             type="email"
             placeholder="Email"
             defaultValue={email}
+            className={authInputClassName}
             aria-invalid={fieldErrors.email ? 'true' : 'false'}
           />
           {fieldErrors.email && (
@@ -62,6 +67,7 @@ export default function SignUpPage() {
             name="password"
             type="password"
             placeholder="Password"
+            className={authInputClassName}
             aria-invalid={fieldErrors.password ? 'true' : 'false'}
           />
           {fieldErrors.password && (
@@ -74,6 +80,7 @@ export default function SignUpPage() {
             name="confirmPassword"
             type="password"
             placeholder="Repeat password"
+            className={authInputClassName}
             aria-invalid={fieldErrors.confirmPassword ? 'true' : 'false'}
           />
           {fieldErrors.confirmPassword && (

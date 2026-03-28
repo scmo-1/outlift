@@ -77,8 +77,7 @@ function SetLogger({ sessionId, sessionExerciseId, setIndex, history }: SetLogge
   }
 
   return (
-    <div className="rounded-lg border p-4">
-      <h2 className="mb-4 text-lg font-medium">Set {setIndex}</h2>
+    <div className="pt-1">
       <div className="grid gap-4 md:grid-cols-3">
         <LogInput
           label="Weight"

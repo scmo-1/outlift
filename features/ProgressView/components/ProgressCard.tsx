@@ -1,5 +1,5 @@
 import type { ProgressHistoryItem } from '@/types/progression'
-import { Card, CardContent, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import clsx from 'clsx'
 
@@ -14,7 +14,6 @@ function ProgressCard({ data }: ProgressCardProps) {
   if (!firstItem || !latestItem) {
     return (
       <Card>
-        <CardTitle>Progression</CardTitle>
         <CardContent className="text-sm text-muted-foreground">
           No history recorded yet.
         </CardContent>
@@ -29,27 +28,37 @@ function ProgressCard({ data }: ProgressCardProps) {
     comparison === null ? 'NONE' : comparison > 0 ? `+${comparison}` : comparison.toString()
 
   const comparisonStyle = clsx({
-    'text-green-300': comparison !== null && comparison > 0,
-    'text-red-300': comparison !== null && comparison < 0,
+    'text-green-200': comparison !== null && comparison > 0,
+    'text-destructive': comparison !== null && comparison < 0,
     'text-muted-foreground': comparison === null || comparison === 0,
   })
-  const divStyle = cn('bg-secondary text-secondary-foreground rounded-xl flex flex-col gap-1 p-2')
+  const statCardStyle = cn(
+    'rounded-2xl border border-border/70 bg-muted/30 px-3 py-2',
+    'flex flex-col gap-1.5',
+  )
 
   return (
-    <Card>
-      <CardTitle>Progression</CardTitle>
-      <CardContent className="flex justify-around">
-        <div className={divStyle}>
-          <span className="text-xs">Current:</span>
-          <span>{latestItem?.e1rm}</span>
+    <Card className="border-border/70 bg-card">
+      <CardContent className="grid gap-3 p-3 sm:grid-cols-3">
+        <div className={statCardStyle}>
+          <span className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            Current
+          </span>
+          <span className="text-lg font-semibold">{latestItem.e1rm}</span>
         </div>
-        <div className={divStyle}>
-          <span className="text-xs">Start:</span>
-          <span>{firstItem.e1rm}</span>
+
+        <div className={statCardStyle}>
+          <span className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            Start
+          </span>
+          <span className="text-lg font-semibold text-muted-foreground">{firstItem.e1rm}</span>
         </div>
-        <div className={divStyle}>
-          <span className="text-xs">Change:</span>
-          <span className={comparisonStyle}>{comparisonLabel}</span>
+
+        <div className={cn(statCardStyle, 'bg-accent/5')}>
+          <span className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            Change
+          </span>
+          <span className={cn('text-lg font-semibold', comparisonStyle)}>{comparisonLabel}</span>
         </div>
       </CardContent>
     </Card>

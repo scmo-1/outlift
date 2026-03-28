@@ -30,7 +30,7 @@ export function ProgressChart({ data }: ProgressChartProps) {
   }
 
   return (
-    <ChartContainer config={chartConfig} className="min-h-60 w-full">
+    <ChartContainer config={chartConfig} className="min-h-45 w-full">
       <LineChart accessibilityLayer data={data}>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="date" tickLine={false} axisLine={false} />

@@ -20,7 +20,8 @@ function ProgressView({ data }: PageData) {
   }
 
   return (
-    <div className="w-full flex flex-col ">
+    <div className="w-full flex flex-col pb-30">
+      <h1 className="my-2">Progression</h1>
       <Tabs defaultValue={data.scope} onValueChange={onScopeChange}>
         <TabsList>
           <TabsTrigger value="activeProgram">Current Program</TabsTrigger>

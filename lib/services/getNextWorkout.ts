@@ -7,7 +7,7 @@ export async function getNextWorkout(profileId: string): Promise<ProgramWorkoutR
   const activeProgram = await getActiveProgram(profileId)
   if (!activeProgram) return null
 
-  const workouts = await listAllWorkouts(activeProgram.id)
+  const workouts = await listAllWorkouts(activeProgram.id, profileId)
   if (workouts.length === 0) return null
 
   const completedSessions = await listCompletedSessions(profileId)

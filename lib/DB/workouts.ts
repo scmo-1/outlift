@@ -1,7 +1,27 @@
 import type { WorkoutModel } from '@/types/models'
 import { getSupabase } from './utils'
 
-export async function listAllWorkouts(programId: string): Promise<WorkoutModel[]> {
+async function verifyProgramOwnership(programId: string, profileId: string): Promise<boolean> {
+  const supabase = await getSupabase()
+  const { data, error } = await supabase
+    .from('programs')
+    .select('id')
+    .eq('id', programId)
+    .eq('profile_id', profileId)
+    .maybeSingle()
+
+  if (error) throw error
+
+  return Boolean(data)
+}
+
+export async function listAllWorkouts(programId: string, profileId: string): Promise<WorkoutModel[]> {
+  const hasAccess = await verifyProgramOwnership(programId, profileId)
+
+  if (!hasAccess) {
+    return []
+  }
+
   const supabase = await getSupabase()
 
   const { data, error } = await supabase
@@ -15,7 +35,7 @@ export async function listAllWorkouts(programId: string): Promise<WorkoutModel[]
   return data ?? []
 }
 
-export async function getWorkout(workoutId: string): Promise<WorkoutModel | null> {
+export async function getWorkout(workoutId: string, profileId: string): Promise<WorkoutModel | null> {
   const supabase = await getSupabase()
 
   const { data, error } = await supabase
@@ -36,5 +56,15 @@ export async function getWorkout(workoutId: string): Promise<WorkoutModel | null
 
   if (error) throw error
 
-  return data ?? null
+  if (!data) {
+    return null
+  }
+
+  const hasAccess = await verifyProgramOwnership(data.program_id, profileId)
+
+  if (!hasAccess) {
+    return null
+  }
+
+  return data
 }

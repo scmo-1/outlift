@@ -7,9 +7,9 @@ import type {
   WorkoutDetailsSet,
 } from '@/types/workouts'
 
-export async function getWorkoutDetails(workoutId: string): Promise<WorkoutDetails> {
-  const workout = await getWorkout(workoutId)
-  const sessionDetails = await listSessionDetailsByWorkout(workoutId)
+export async function getWorkoutDetails(workoutId: string, profileId: string): Promise<WorkoutDetails> {
+  const workout = await getWorkout(workoutId, profileId)
+  const sessionDetails = await listSessionDetailsByWorkout(workoutId, profileId)
 
   if (!workout) {
     throw new Error('Workout not found')

@@ -348,7 +348,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_program_with_workouts: {
+        Args: {
+          p_profile_id: string
+          p_program_name: string
+          p_workouts: Json
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

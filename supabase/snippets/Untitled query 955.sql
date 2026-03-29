@@ -7,8 +7,8 @@ with
             email
         from public.profiles
         where
-            id = '980a5c41-e1f9-4ed4-b6e2-78ec7399ccb0'
-            and email = 'test@mail.com'
+            id = 'e0e8f2f9-f5d6-4b52-af51-1de48e061902'
+            and email = 'test@email.com'
         limit 1
     ),
 

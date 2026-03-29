@@ -111,50 +111,29 @@ export async function createProgram(profileId: string, programDraft: ProgramDraf
     }
   }
 
+  const { data: programId, error: createProgramError } = await supabase.rpc(
+    'create_program_with_workouts',
+    {
+      p_profile_id: profileId,
+      p_program_name: programName,
+      p_workouts: programDraft.workouts,
+    },
+  )
+
+  if (createProgramError) throw createProgramError
+
+  if (!programId) {
+    throw new Error('Program could not be created')
+  }
+
   const { data: program, error: programError } = await supabase
     .from('programs')
-    .insert({
-      profile_id: profileId,
-      name: programName,
-      is_active: false,
-    })
     .select('*')
+    .eq('id', programId)
+    .eq('profile_id', profileId)
     .single()
 
   if (programError) throw programError
-
-  for (const workout of programDraft.workouts) {
-    const { data: createdWorkout, error: workoutError } = await supabase
-      .from('program_workouts')
-      .insert({
-        program_id: program.id,
-        name: workout.name.trim(),
-        order_index: workout.inProgramIndex + 1,
-      })
-      .select('id')
-      .single()
-
-    if (workoutError) throw workoutError
-
-    if (workout.exercises.length === 0) {
-      continue
-    }
-
-    const plannedExercises = workout.exercises.map((exercise) => ({
-      workout_id: createdWorkout.id,
-      exercise_id: exercise.exerciseId,
-      in_workout_index: exercise.inWorkoutIndex + 1,
-      sets: exercise.sets.length,
-      // Current schema stores one rep goal per planned exercise.
-      rep_goal: exercise.sets[0]?.repGoal ?? 0,
-    }))
-
-    const { error: exerciseError } = await supabase
-      .from('program_workout_exercises')
-      .insert(plannedExercises)
-
-    if (exerciseError) throw exerciseError
-  }
 
   return program
 }

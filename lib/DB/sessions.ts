@@ -31,12 +31,13 @@ export async function getActiveSession(profileId: string): Promise<WorkoutSessio
   return data?.[0] ?? null
 }
 
-export async function getSessionMetaById(sessionId: string): Promise<sessionMeta> {
+export async function getSessionMetaById(sessionId: string, profileId: string): Promise<sessionMeta> {
   const supabase = await getSupabase()
   const { data, error } = await supabase
     .from('workout_sessions')
     .select(`id, workout_id, started_at, ended_at`)
     .eq('id', sessionId)
+    .eq('profile_id', profileId)
     .single()
 
   if (error) throw error

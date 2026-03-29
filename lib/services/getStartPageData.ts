@@ -18,7 +18,7 @@ export async function getStartPageData({
   sessionId,
 }: GetStartPageParams): Promise<StartPageData> {
   if (sessionId) {
-    const session = await getSessionMetaById(sessionId)
+    const session = await getSessionMetaById(sessionId, profileId)
     if (!session) throw new Error('No session found')
 
     const workoutDetails = await getWorkoutDetails(session.workout_id)

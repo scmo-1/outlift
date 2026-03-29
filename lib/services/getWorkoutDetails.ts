@@ -19,10 +19,11 @@ export async function getWorkoutDetails(workoutId: string, profileId: string): P
     const previous: WorkoutDetailsSession[] = sessionDetails.flatMap((session) => {
       const matchingExercises =
         session.session_exercises?.filter((sessionExercise) => {
-          return (
-            sessionExercise.exercise_id === planned.exercise_id ||
-            sessionExercise.planned_exercise_id === planned.id
-          )
+          if (sessionExercise.planned_exercise_id) {
+            return sessionExercise.planned_exercise_id === planned.id
+          }
+
+          return sessionExercise.in_session_index === planned.in_workout_index
         }) ?? []
 
       return matchingExercises.map((sessionExercise) => {
@@ -47,6 +48,7 @@ export async function getWorkoutDetails(workoutId: string, profileId: string): P
 
     return {
       id: planned.id,
+      inWorkoutIndex: planned.in_workout_index,
       name: planned.exercise.name,
       sets: planned.sets,
       repGoal: planned.rep_goal,

@@ -16,7 +16,11 @@ export async function getSessionPageData(profileId: string): Promise<SessionPage
 
   const filteredExercises = sessionDetails.session_exercises.map((sessionExercise) => {
     const workoutExercise = workoutDetails.exercises.find((exercise) => {
-      return exercise.name === sessionExercise.exercise_name
+      if (sessionExercise.planned_exercise_id) {
+        return exercise.id === sessionExercise.planned_exercise_id
+      }
+
+      return exercise.inWorkoutIndex === sessionExercise.in_session_index
     })
 
     if (!workoutExercise) {

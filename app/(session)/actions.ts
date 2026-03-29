@@ -62,7 +62,11 @@ export async function endSessionAction(sessionId: string) {
 
   for (const sessionExercise of session.session_exercises) {
     const workoutExercise = workoutDetails.exercises.find((exercise) => {
-      return exercise.name === sessionExercise.exercise_name
+      if (sessionExercise.planned_exercise_id) {
+        return exercise.id === sessionExercise.planned_exercise_id
+      }
+
+      return exercise.inWorkoutIndex === sessionExercise.in_session_index
     })
 
     if (!workoutExercise) {

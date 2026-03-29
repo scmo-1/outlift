@@ -6,6 +6,7 @@ export type WorkoutDetails = {
 
 export type WorkoutDetailsExercise = {
   id: string
+  inWorkoutIndex: number
   name: string
   sets: number
   repGoal: number

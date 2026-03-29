@@ -15,6 +15,7 @@ import {
 import ExercisesList from './components/ExercisesList'
 import type { ExerciseDraft, ExerciseDraftSet, ExerciseItem } from '@/types/createProgram'
 import type { ProgramDraft, WorkoutDraft } from '@/types/createProgram'
+import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
 type CreatePageProps = {
   exercises: ExerciseItem[]
@@ -202,7 +203,11 @@ function CreateProgramPage({ exercises, createProgramAction }: CreatePageProps) 
     startTransition(async () => {
       try {
         await createProgramAction(programDraft)
-      } catch {
+      } catch (error) {
+        if (isRedirectError(error)) {
+          throw error
+        }
+
         setIsCreateErrorOpen(true)
       }
     })

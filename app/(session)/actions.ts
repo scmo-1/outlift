@@ -58,7 +58,7 @@ export async function endSessionAction(sessionId: string) {
     throw new Error('Session workout not found')
   }
 
-  const workoutDetails = await getWorkoutDetails(activeSession.workout_id)
+  const workoutDetails = await getWorkoutDetails(activeSession.workout_id, profile.id)
 
   for (const sessionExercise of session.session_exercises) {
     const workoutExercise = workoutDetails.exercises.find((exercise) => {
@@ -87,5 +87,5 @@ export async function endSessionAction(sessionId: string) {
     }
   }
 
-  return endWorkoutSession(sessionId)
+  return endWorkoutSession(sessionId, profile.id)
 }

@@ -11,7 +11,7 @@ export async function getSessionPageData(profileId: string): Promise<SessionPage
 
   if (!activeSession.workout_id) throw new Error('No workout id found')
 
-  const workoutDetails = await getWorkoutDetails(activeSession.workout_id)
+  const workoutDetails = await getWorkoutDetails(activeSession.workout_id, profileId)
   if (!workoutDetails) throw new Error('No workout details found')
 
   const filteredExercises = sessionDetails.session_exercises.map((sessionExercise) => {

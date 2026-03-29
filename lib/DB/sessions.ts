@@ -31,12 +31,13 @@ export async function getActiveSession(profileId: string): Promise<WorkoutSessio
   return data?.[0] ?? null
 }
 
-export async function getSessionMetaById(sessionId: string): Promise<sessionMeta> {
+export async function getSessionMetaById(sessionId: string, profileId: string): Promise<sessionMeta> {
   const supabase = await getSupabase()
   const { data, error } = await supabase
     .from('workout_sessions')
     .select(`id, workout_id, started_at, ended_at`)
     .eq('id', sessionId)
+    .eq('profile_id', profileId)
     .single()
 
   if (error) throw error
@@ -83,7 +84,7 @@ export async function getSessionDetailsById(sessionId: string, profileId: string
   return data
 }
 
-export async function listSessionDetailsByWorkout(workoutId: string) {
+export async function listSessionDetailsByWorkout(workoutId: string, profileId: string) {
   const supabase = await getSupabase()
 
   const { data, error } = await supabase
@@ -117,6 +118,7 @@ export async function listSessionDetailsByWorkout(workoutId: string) {
     `,
     )
     .eq('workout_id', workoutId)
+    .eq('profile_id', profileId)
     .not('ended_at', 'is', null)
     .order('ended_at', { ascending: false })
 
@@ -159,7 +161,10 @@ export async function createWorkoutSession(
   return data
 }
 
-export async function endWorkoutSession(sessionId: string): Promise<WorkoutSessionRow> {
+export async function endWorkoutSession(
+  sessionId: string,
+  profileId: string,
+): Promise<WorkoutSessionRow> {
   const supabase = await getSupabase()
   const { data, error } = await supabase
     .from('workout_sessions')
@@ -167,6 +172,7 @@ export async function endWorkoutSession(sessionId: string): Promise<WorkoutSessi
       ended_at: new Date().toISOString(),
     })
     .eq('id', sessionId)
+    .eq('profile_id', profileId)
     .select('*')
     .single()
 
@@ -178,9 +184,10 @@ export async function endWorkoutSession(sessionId: string): Promise<WorkoutSessi
 export async function createSessionExercises(
   sessionId: string,
   workoutId: string,
+  profileId: string,
 ): Promise<SessionExerciseRow[]> {
   const supabase = await getSupabase()
-  const workout = await getWorkout(workoutId)
+  const workout = await getWorkout(workoutId, profileId)
 
   if (!workout) {
     throw new Error('Workout not found')

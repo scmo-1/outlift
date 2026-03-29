@@ -24,7 +24,7 @@ export async function startSession(profileId: string): Promise<newSessionMeta> {
   if (!session) {
     throw new Error('Session could not start')
   }
-  const sessionExercises = await createSessionExercises(session.id, nextWorkout.id)
+  const sessionExercises = await createSessionExercises(session.id, nextWorkout.id, profileId)
   if (!sessionExercises) {
     throw new Error('Session exercises could not be created')
   }

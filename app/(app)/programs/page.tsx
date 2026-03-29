@@ -22,7 +22,7 @@ export default async function ProgramsPage() {
   const PageData = await getProgramsPageData(profile.id)
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-35">
       <div className="flex justify-between items-center">
         <h1 className="mt-6 mb-2">programs</h1>
         <Link href="/create">
